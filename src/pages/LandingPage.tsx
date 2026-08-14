@@ -449,9 +449,13 @@ const LandingPage = () => {
 
       <div className={`landing-fixed-top md:hidden fixed inset-x-3 top-4 z-50 mx-auto max-w-[30rem]${isHeaderElevated ? " is-elevated" : ""}`}>
         <div className="relative">
-          <div className="landing-mobile-header-bar w-full h-[4.5rem] rounded-2xl bg-gray-950/80 backdrop-blur-2xl px-4 flex items-center gap-3">
+          <div className={`landing-mobile-header-bar w-full h-[4.5rem] rounded-2xl transition-all duration-300 px-4 flex items-center gap-3 ${
+            isHeaderElevated
+              ? "border border-white/15 bg-gray-950/90 backdrop-blur-2xl shadow-2xl"
+              : "bg-transparent border-none"
+          }`}>
             <Link to="/" className="flex items-center gap-2 min-w-0 flex-1 overflow-hidden" onClick={() => setIsMenuOpen(false)}>
-              <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shadow-lg shadow-brand-900/20 flex-shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0">
                 <BrandLogo className="w-5 h-5" />
               </div>
               <div className="min-w-0">
@@ -461,7 +465,7 @@ const LandingPage = () => {
             <button
               type="button"
               aria-label="Toggle navigation menu"
-              className="w-10 h-10 rounded-xl border border-white/10 bg-gray-900/75 text-gray-200 flex items-center justify-center flex-shrink-0"
+              className="w-10 h-10 rounded-xl bg-white/5 text-gray-200 flex items-center justify-center flex-shrink-0"
               onClick={() => setIsMenuOpen((prev) => !prev)}
             >
               {isMenuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
@@ -485,8 +489,8 @@ const LandingPage = () => {
                     }}
                     className={`flex w-full items-center justify-between rounded-xl px-3 py-3 text-sm font-medium transition-colors ${
                       activeNav === item.href
-                        ? "border border-white/15 bg-gray-800/80 text-white"
-                        : "border border-transparent text-gray-300 hover:bg-gray-800/60 hover:text-white"
+                        ? "bg-white/15 text-white font-bold"
+                        : "text-gray-300 hover:bg-gray-800/60 hover:text-white"
                     }`}
                   >
                     <span>{item.label}</span>
@@ -511,13 +515,17 @@ const LandingPage = () => {
       <div className={`landing-fixed-top hidden md:block fixed inset-x-0 top-5 z-50 px-6 lg:px-8${isHeaderElevated ? " is-elevated" : ""}`}>
         <div className="w-full max-w-7xl mx-auto">
         <Navbar
-          className="landing-desktop-nav bg-gray-950/60 backdrop-blur-2xl border-b border-white/5"
+          className={`landing-desktop-nav transition-all duration-300 ${
+            isHeaderElevated
+              ? "rounded-2xl border border-white/15 bg-gray-950/88 backdrop-blur-2xl shadow-2xl shadow-black/80"
+              : "bg-transparent border-none shadow-none"
+          }`}
           maxWidth="full"
           height="4.5rem"
         >
         <NavbarContent justify="start" className="gap-3">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shadow-lg shadow-brand-900/20">
+            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shadow-lg shadow-brand-900/20">
               <BrandLogo className="w-6 h-6" />
             </div>
             <div>
@@ -528,7 +536,7 @@ const LandingPage = () => {
         </NavbarContent>
 
         <NavbarContent justify="center" className="hidden lg:flex">
-          <div className="flex items-center gap-1.5 rounded-full border border-gray-700/70 bg-gray-900/55 p-1.5 backdrop-blur-xl">
+          <div className="flex items-center gap-1 rounded-full bg-white/5 p-1.5 backdrop-blur-xl">
             {navItems.map((item) => (
               <a
                 key={item.href}
@@ -536,8 +544,8 @@ const LandingPage = () => {
                 onClick={() => setActiveNav(item.href)}
                 className={`${headerTabClass} ${
                   activeNav === item.href
-                    ? "bg-gray-800/90 border border-gray-600/65 text-gray-100 font-bold shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]"
-                    : "border border-transparent text-gray-400 hover:text-gray-200 hover:bg-gray-800/65"
+                    ? "bg-white/15 text-white font-bold rounded-full"
+                    : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
                 }`}
               >
                 {item.label}
@@ -547,16 +555,14 @@ const LandingPage = () => {
         </NavbarContent>
 
         <NavbarContent justify="end" className="gap-3">
-          <span className="golden-button-orbit inline-flex">
-            <Link to="/dashboard">
-              <Button
-                className={navButtonClass}
-                endContent={<FiArrowRight className="text-[16px] transition-transform duration-300 group-hover:translate-x-1" />}
-              >
-                Launch App
-              </Button>
-            </Link>
-          </span>
+          <Link to="/dashboard">
+            <Button
+              className={navButtonClass}
+              endContent={<FiArrowRight className="text-[16px] transition-transform duration-300 group-hover:translate-x-1" />}
+            >
+              Launch App
+            </Button>
+          </Link>
         </NavbarContent>
         </Navbar>
         </div>

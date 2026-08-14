@@ -802,11 +802,9 @@ input[type="file"]::file-selector-button:hover {
 }
 
 .landing-variant-01 .landing-hero-stage {
-  background:
-    radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.03), transparent 32%),
-    radial-gradient(circle at 16% 86%, rgba(214, 65, 81, 0.16), transparent 44%),
-    radial-gradient(circle at 84% 22%, rgba(57, 109, 205, 0.16), transparent 44%),
-    linear-gradient(130deg, rgba(6, 10, 20, 0.94), rgba(7, 12, 24, 0.84));
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .landing-variant-01 .landing-flow-panel {
@@ -821,8 +819,8 @@ input[type="file"]::file-selector-button:hover {
 }
 
 .landing-variant-02 .landing-desktop-nav {
-  border-color: rgba(74, 125, 200, 0.46) !important;
-  background: linear-gradient(120deg, rgba(7, 17, 34, 0.95), rgba(7, 15, 29, 0.9)) !important;
+  border: none !important;
+  background: transparent !important;
 }
 
 .landing-variant-02 .landing-grid-overlay {
@@ -846,10 +844,8 @@ input[type="file"]::file-selector-button:hover {
 
 .landing-variant-02 .landing-hero-stage {
   border: none !important;
-  background:
-    radial-gradient(120% 90% at 65% 2%, rgba(84, 163, 255, 0.2), transparent 40%),
-    radial-gradient(90% 50% at 40% 32%, rgba(70, 137, 231, 0.16), transparent 56%),
-    linear-gradient(135deg, rgba(6, 16, 34, 0.95), rgba(7, 13, 25, 0.9));
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .landing-variant-02 .landing-hero-stage::after {
@@ -898,8 +894,8 @@ input[type="file"]::file-selector-button:hover {
 }
 
 .landing-variant-03 .landing-desktop-nav {
-  border-color: rgba(170, 109, 63, 0.5) !important;
-  background: linear-gradient(120deg, rgba(20, 12, 10, 0.94), rgba(14, 11, 15, 0.88)) !important;
+  border: none !important;
+  background: transparent !important;
 }
 
 .landing-variant-03 .landing-grid-overlay {
