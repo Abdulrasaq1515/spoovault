@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@heroui/react": "^2.0.0",
+    "@heroui/theme": "^2.0.0",
     "@metamask/eth-sig-util": "^8.2.0",
     "@stellar/freighter-api": "^2.0.0",
     "@stellar/stellar-sdk": "^12.1.0",
