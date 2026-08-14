@@ -1150,6 +1150,11 @@ input[type="file"]::file-selector-button:hover {
   pointer-events: none;
 }
 
+#hero::before {
+  display: none !important;
+  content: none !important;
+}
+
 .hero-workflow-cards {
   display: grid;
   gap: 0.9rem;

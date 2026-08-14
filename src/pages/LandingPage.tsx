@@ -1,8 +1,6 @@
 import { UIEvent, useCallback, useEffect, useRef, useState } from "react";
 import {
   Button,
-  Navbar,
-  NavbarContent,
 } from "@heroui/react";
 import {
   FiArrowRight,
@@ -451,7 +449,7 @@ const LandingPage = () => {
         <div className="relative">
           <div className={`landing-mobile-header-bar w-full h-[4.5rem] rounded-2xl transition-all duration-300 px-4 flex items-center gap-3 ${
             isHeaderElevated
-              ? "border border-white/15 bg-gray-950/90 backdrop-blur-2xl shadow-2xl"
+              ? "border border-white/15 bg-gray-950/92 backdrop-blur-2xl shadow-2xl shadow-black/90"
               : "bg-transparent border-none"
           }`}>
             <Link to="/" className="flex items-center gap-2 min-w-0 flex-1 overflow-hidden" onClick={() => setIsMenuOpen(false)}>
@@ -512,61 +510,61 @@ const LandingPage = () => {
         </div>
       </div>
 
-      <div className={`landing-fixed-top hidden md:block fixed inset-x-0 top-5 z-50 px-6 lg:px-8${isHeaderElevated ? " is-elevated" : ""}`}>
-        <div className="w-full max-w-7xl mx-auto">
-        <Navbar
-          className={`landing-desktop-nav transition-all duration-300 ${
+      {/* Floating Shoot-Out Desktop Header Navbar */}
+      <header
+        className={`hidden md:block fixed inset-x-0 top-0 z-50 transition-all duration-300 pointer-events-none ${
+          isHeaderElevated ? "pt-3 px-4 sm:px-6 lg:px-8" : "pt-5 px-6 lg:px-8"
+        }`}
+      >
+        <div
+          className={`mx-auto pointer-events-auto transition-all duration-300 ${
             isHeaderElevated
-              ? "rounded-2xl border border-white/15 bg-gray-950/88 backdrop-blur-2xl shadow-2xl shadow-black/80"
-              : "bg-transparent border-none shadow-none"
+              ? "max-w-6xl rounded-2xl border border-white/15 bg-gray-950/92 backdrop-blur-2xl shadow-2xl shadow-black/90 px-6 py-2.5"
+              : "max-w-7xl bg-transparent border-none px-2 py-2"
           }`}
-          maxWidth="full"
-          height="4.5rem"
         >
-        <NavbarContent justify="start" className="gap-3">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shadow-lg shadow-brand-900/20">
-              <BrandLogo className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-xl sm:text-2xl font-bold">SpooVault</h1>
-              <p className="text-[11px] text-gray-400">Stellar & Avalanche Access Vault</p>
-            </div>
-          </Link>
-        </NavbarContent>
+          <div className="flex items-center justify-between gap-4 h-12">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shadow-lg shadow-brand-900/20">
+                <BrandLogo className="w-6 h-6" />
+              </div>
+              <div>
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">SpooVault</h1>
+                <p className="text-[11px] text-gray-400">Stellar & Avalanche Access Vault</p>
+              </div>
+            </Link>
 
-        <NavbarContent justify="center" className="hidden lg:flex">
-          <div className="flex items-center gap-1 rounded-full bg-white/5 p-1.5 backdrop-blur-xl">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={() => setActiveNav(item.href)}
-                className={`${headerTabClass} ${
-                  activeNav === item.href
-                    ? "bg-white/15 text-white font-bold rounded-full"
-                    : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
-                }`}
-              >
-                {item.label}
-              </a>
-            ))}
+            <nav className="hidden lg:flex items-center gap-1 rounded-full bg-white/5 p-1.5 backdrop-blur-xl">
+              {navItems.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setActiveNav(item.href)}
+                  className={`${headerTabClass} ${
+                    activeNav === item.href
+                      ? "bg-white/15 text-white font-bold rounded-full"
+                      : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
+                  }`}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-3">
+              <Link to="/dashboard">
+                <Button
+                  className={navButtonClass}
+                  endContent={<FiArrowRight className="text-[16px] transition-transform duration-300 group-hover:translate-x-1" />}
+                >
+                  Launch App
+                </Button>
+              </Link>
+            </div>
           </div>
-        </NavbarContent>
-
-        <NavbarContent justify="end" className="gap-3">
-          <Link to="/dashboard">
-            <Button
-              className={navButtonClass}
-              endContent={<FiArrowRight className="text-[16px] transition-transform duration-300 group-hover:translate-x-1" />}
-            >
-              Launch App
-            </Button>
-          </Link>
-        </NavbarContent>
-        </Navbar>
         </div>
-      </div>
+      </header>
+
       <div className="landing-main-fade flex-1">
       <div className="h-[96px] sm:h-[104px]" aria-hidden="true" />
 
@@ -609,8 +607,8 @@ const LandingPage = () => {
                 </a>
               </div>
 
-              {/* Product Metrics Row */}
-              <div className="mt-14 pt-8 border-t border-gray-800/80 grid grid-cols-3 gap-6">
+              {/* Product Metrics Row (Borderless) */}
+              <div className="mt-14 pt-8 grid grid-cols-3 gap-6">
                 <div>
                   <p className="text-2xl sm:text-3xl font-black text-white tracking-tight">35K+</p>
                   <p className="text-xs sm:text-sm text-gray-400 font-medium mt-1">Key Shares Encrypted</p>
