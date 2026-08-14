@@ -526,3 +526,6 @@ impl SpooVaultStellar {
 fn back_address(addr: Address) -> Address {
     addr
 }
+
+mod test;
+

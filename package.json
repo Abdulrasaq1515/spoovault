@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:contracts": "hardhat test",
+    "test:stellar": "cd contracts-stellar && cargo test",
     "test:smoke": "node scripts/smoke-check.mjs",
     "test:baseline": "node scripts/test-baseline.mjs",
     "test:sss": "node scripts/test-sss.mjs",
