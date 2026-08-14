@@ -31,7 +31,7 @@ jobs:
         run: npm run build
 
       - name: Compile Hardhat EVM Contracts
-        run: npx hardhat compile
+        run: npx hardhat compile --config hardhat.config.cjs
 
       - name: Run Unit Tests
         run: npm test
