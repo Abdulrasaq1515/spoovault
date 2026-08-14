@@ -20,7 +20,7 @@ export interface AuditCertificate {
     event: string;
     actor: string;
     timestamp: number;
-    details: string;
+    status: string;
   }[];
   sha256Digest: string;
 }
@@ -50,10 +50,10 @@ class AuditService {
         uploadedAt: doc.uploadedAt,
       })),
       activityLogs: activities.map((act) => ({
-        event: act.type,
+        event: act.action,
         actor: act.actor,
         timestamp: act.timestamp,
-        details: act.details,
+        status: act.status,
       })),
     };
 
@@ -87,13 +87,13 @@ class AuditService {
    * Export activity logs as CSV
    */
   public downloadActivityCSV(vaultId: number, activities: ActivityEvent[]) {
-    const headers = ["Event", "Actor", "Timestamp", "Formatted Date", "Details"];
+    const headers = ["Action", "Actor", "Timestamp", "Formatted Date", "Status"];
     const rows = activities.map((act) => [
-      act.type,
+      act.action,
       act.actor,
       act.timestamp,
       new Date(act.timestamp * 1000).toISOString(),
-      `"${(act.details || "").replace(/"/g, '""')}"`,
+      act.status,
     ]);
 
     const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
