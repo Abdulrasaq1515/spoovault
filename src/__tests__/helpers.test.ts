@@ -39,12 +39,19 @@ describe('Helper Utilities', () => {
     });
   });
 
-  describe('formatFileSize', () => {
+  describe('formatFileSize & formatDate', () => {
     it('should format byte sizes into readable units', () => {
       expect(formatFileSize(0)).toBe('0 Bytes');
       expect(formatFileSize(1024)).toBe('1 KB');
       expect(formatFileSize(1048576)).toBe('1 MB');
       expect(formatFileSize(1073741824)).toBe('1 GB');
+    });
+
+    it('should format Unix timestamp into human readable date string', () => {
+      const timestamp = 1700000000;
+      const formatted = formatDate(timestamp);
+      expect(formatted).toBeDefined();
+      expect(typeof formatted).toBe('string');
     });
   });
 
