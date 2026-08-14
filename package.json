@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:contracts": "hardhat test",
+    "test:contracts": "npx hardhat test --config hardhat.config.cjs",
     "test:stellar": "cd contracts-stellar && cargo test",
     "test:smoke": "node scripts/smoke-check.mjs",
     "test:baseline": "node scripts/test-baseline.mjs",
