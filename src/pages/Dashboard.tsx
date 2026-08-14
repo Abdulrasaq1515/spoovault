@@ -1051,7 +1051,7 @@ const Dashboard = () => {
               await contractService.recordProofOfLife(id);
             }}
             onToggleEmergencyMode={async (id, enabled) => {
-              await contractService.toggleEmergencyMode(id, enabled);
+              await contractService.setEmergencyMode(id, enabled);
             }}
           />
         </div>
