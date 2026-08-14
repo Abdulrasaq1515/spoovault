@@ -13,7 +13,6 @@ import {
   FiCheckCircle,
   FiFileText,
   FiKey,
-  FiClock,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { getCurrentYear } from "../utils/helpers";
@@ -52,24 +51,6 @@ const LandingPage = () => {
     { label: "Features", href: "#features" },
     { label: "Workflow", href: "#workflow" },
     { label: "Security", href: "#security" },
-  ];
-
-  const workflowCards = [
-    {
-      step: "01",
-      title: "Store Sensitive Files",
-      text: "Upload wills, IDs, ownership records, and private files with client-side encryption.",
-    },
-    {
-      step: "02",
-      title: "Guardian Oversight",
-      text: "You can approve access while alive, or require guardian multi-signature for emergency/inheritance release.",
-    },
-    {
-      step: "03",
-      title: "Controlled Delivery",
-      text: "Authorized family members or trusted contacts access documents only under the policy you define.",
-    },
   ];
 
   const featureCards = [
@@ -119,8 +100,6 @@ const LandingPage = () => {
 
   const navButtonClass = `button-curve group ${buttonClasses.primarySm}`;
   const solidButtonClass = `button-curve group ${buttonClasses.primaryMd}`;
-  const outlineButtonClass = `button-curve group ${buttonClasses.outlineMd}`;
-  const neutralButtonClass = `button-curve group ${buttonClasses.neutralMd}`;
 
   const headerTabClass =
     "h-9 px-4 rounded-full text-[13px] sm:text-[14px] font-semibold transition-all duration-300 inline-flex items-center";
@@ -527,144 +506,138 @@ const LandingPage = () => {
       <div className="landing-main-fade flex-1">
       <div className="h-[96px] sm:h-[104px]" aria-hidden="true" />
 
-      <section id="hero" className="landing-section relative px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 pb-14 sm:pb-20">
+      <section id="hero" className="landing-section relative px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-16 sm:pb-24">
         <div className="landing-hero-stage">
-        <div className="landing-hero-edge landing-hero-edge--left" />
-        <div className="landing-hero-edge landing-hero-edge--right" />
-        <div className="landing-hero-beam" />
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-start">
-          <div className="landing-hero-copy reveal-on-scroll" data-reveal data-reveal-delay="40">
-            <h1 className="landing-hero-title text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
-              <span className="landing-hero-line landing-hero-line--primary">Protect Family Documents</span>
-              <span className="landing-hero-line landing-hero-line--accent text-brand-400">
-                While You{" "}
-                <span className="landing-typewriter" aria-live="polite">
-                  {typedHeadline || " "}
-                  <span className={`landing-type-caret${isTypingComplete ? " is-hidden" : ""}`} />
-                </span>
-              </span>
-            </h1>
+          <div className="landing-hero-edge landing-hero-edge--left" />
+          <div className="landing-hero-edge landing-hero-edge--right" />
+          <div className="landing-hero-beam" />
+          
+          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+            {/* Left Copy & Actions */}
+            <div className="landing-hero-copy reveal-on-scroll" data-reveal data-reveal-delay="40">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight text-white">
+                Finest Encrypted<br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-purple-300 to-pink-500">
+                  Key Share & Vault
+                </span><br />
+                Marketplace
+              </h1>
 
-            <p className="landing-hero-meta mt-4 text-xs sm:text-sm text-gray-400 tracking-wide">
-              Avalanche Fuji {"\u2022"} AES-256 {"\u2022"} Multi-Sig
-            </p>
+              <p className="landing-hero-description mt-6 text-base sm:text-lg text-gray-300 max-w-xl leading-relaxed">
+                Best place for you to discover, create, and manage encrypted secret shares and Web3 inheritance vaults.
+              </p>
 
-            <p className="landing-hero-description mt-4 text-base sm:text-lg text-gray-400 max-w-2xl leading-relaxed">
-              SpooVault secures critical documents for everyday control while you&apos;re alive, with
-              guardian-governed emergency and inheritance release when needed.
-            </p>
-
-            <div className="landing-hero-actions mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <span className="golden-button-orbit inline-flex w-full max-w-full sm:w-auto">
-                <Link to="/dashboard" className="block w-full sm:w-auto">
-                  <Button
-                    className={`w-full sm:w-auto text-sm font-semibold tracking-[0.01em] ${solidButtonClass}`}
-                    endContent={<FiArrowRight className="text-[16px] transition-transform duration-300 group-hover:translate-x-1" />}
-                  >
-                    Start Secure Vault
-                  </Button>
+              <div className="landing-hero-actions mt-8 flex flex-wrap items-center gap-4">
+                <Link to="/dashboard">
+                  <button className="h-12 px-8 rounded-full bg-white text-gray-950 font-bold text-sm tracking-wide transition-all duration-300 hover:bg-gray-200 hover:scale-105 shadow-lg shadow-white/10 flex items-center gap-2">
+                    <span>Explore</span>
+                    <FiArrowRight className="text-base" />
+                  </button>
                 </Link>
-              </span>
-              <a href="#workflow" className="w-full sm:w-auto">
-                <Button
-                  className={`w-full sm:w-auto text-sm font-semibold tracking-[0.01em] !text-red-100 ${outlineButtonClass}`}
-                  endContent={<FiArrowRight className="text-[16px] text-red-100 transition-transform duration-300 group-hover:translate-x-1" />}
-                >
-                  View Access Flow
-                </Button>
-              </a>
-            </div>
 
-            <div
-              ref={kpiSliderRef}
-              onScroll={handleSliderScroll("kpi")}
-              onTouchStart={() => {
-                lastKpiInteractionRef.current = Date.now();
-              }}
-              onMouseDown={() => {
-                lastKpiInteractionRef.current = Date.now();
-              }}
-              className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3 hero-kpi-track"
-            >
-              {kpiCards.map((card, idx) => (
-                <div
-                  key={card.title}
-                  data-slider-item
-                  className={`hero-kpi-item landing-card landing-kpi-card reveal-on-scroll rounded-2xl border border-gray-800 bg-gray-900/35 p-4 ${
-                    activeMobileSlide.kpi === idx ? "is-active-mobile-slide" : ""
-                  }`}
-                  data-reveal
-                  data-reveal-delay={String(140 + idx * 50)}
-                >
-                  <p className="text-xl font-semibold">{card.title}</p>
-                  <p className="text-xs text-gray-400 mt-1">{card.subtitle}</p>
+                <a href="#workflow">
+                  <button className="h-12 px-7 rounded-full border border-gray-700 bg-gray-900/60 text-gray-200 font-semibold text-sm tracking-wide transition-all duration-300 hover:border-gray-500 hover:bg-gray-800 flex items-center gap-2.5">
+                    <div className="w-6 h-6 rounded-full border border-gray-400/80 flex items-center justify-center text-[10px] pl-0.5">
+                      ▶
+                    </div>
+                    <span>Learn More</span>
+                  </button>
+                </a>
+              </div>
+
+              {/* Metrics Row (Matching Mockup) */}
+              <div className="mt-14 pt-8 border-t border-gray-800/80 grid grid-cols-3 gap-6">
+                <div>
+                  <p className="text-2xl sm:text-3xl font-black text-white tracking-tight">35K+</p>
+                  <p className="text-xs sm:text-sm text-gray-400 font-medium mt-1">Trading Cards</p>
                 </div>
-              ))}
-            </div>
-            <div className="mobile-slider-dots" aria-label="KPI slider progress">
-              {kpiCards.map((card, idx) => (
-                <button
-                  key={card.title}
-                  type="button"
-                  aria-label={`Show ${card.title} card`}
-                  onClick={() => scrollSliderToIndex("kpi", idx)}
-                  className={`mobile-slider-dot${activeMobileSlide.kpi === idx ? " is-active" : ""}`}
-                />
-              ))}
-            </div>
-            <p className="mobile-slider-ellipsis" aria-hidden="true">...</p>
-            <p className="mobile-slider-hint">Swipe cards to view all 3 highlights</p>
-          </div>
-
-          <div className="landing-flow-panel reveal-on-scroll rounded-3xl border border-gray-800 bg-gradient-to-b from-gray-900/70 to-gray-950/90 p-5 sm:p-6 lg:max-h-[calc(100vh-8.8rem)] lg:flex lg:flex-col shadow-2xl shadow-black/30" data-reveal data-reveal-delay="100">
-            <div className="mb-4">
-              <div className="flex items-center gap-2 text-[11px] sm:text-xs text-gray-400">
-                <FiClock className="text-brand-400" />
-                <span>Owner + Guardian Control</span>
+                <div>
+                  <p className="text-2xl sm:text-3xl font-black text-white tracking-tight">17K+</p>
+                  <p className="text-xs sm:text-sm text-gray-400 font-medium mt-1">Exclusive NFT</p>
+                </div>
+                <div>
+                  <p className="text-2xl sm:text-3xl font-black text-white tracking-tight">2K+</p>
+                  <p className="text-xs sm:text-sm text-gray-400 font-medium mt-1">Featured Artist</p>
+                </div>
               </div>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-semibold leading-tight">How Access Release Works</h2>
-            <p className="text-sm text-gray-400 mt-2 mb-5">Designed for everyday sharing, emergencies, and inheritance planning.</p>
-
-            <div
-              ref={workflowSliderRef}
-              onScroll={handleSliderScroll("workflow")}
-              className="hero-workflow-cards landing-flow-scroll"
-            >
-              {workflowCards.map((card, idx) => (
-                <div
-                  key={card.step}
-                  data-slider-item
-                  className={`hero-workflow-card landing-flow-step landing-card reveal-on-scroll rounded-2xl border border-gray-800 bg-gray-900/60 p-4 sm:p-5 lg:p-4 transition-colors hover:border-brand-700/40 ${
-                    activeMobileSlide.workflow === idx ? "is-active-mobile-slide" : ""
-                  }`}
-                  data-reveal
-                  data-reveal-delay={String(200 + idx * 60)}
-                >
-                  <div className="w-9 h-9 rounded-xl bg-brand-700/20 border border-brand-700/40 text-brand-300 text-xs font-semibold flex items-center justify-center mb-3">
-                    {card.step}
+            {/* Right Side: 3D Floating Glass Slabs Stack (Exact Match to Mockup) */}
+            <div className="slab-stage hidden sm:block">
+              <div className="slab-card-stack">
+                {/* Background Backing Slab Left */}
+                <div className="slab-glass-card slab-glass-card--back-left">
+                  <div className="p-3">
+                    <div className="w-full h-56 rounded-xl bg-gradient-to-br from-purple-900/60 via-rose-950/40 to-black overflow-hidden flex items-center justify-center">
+                      <BrandLogo className="w-24 h-24 opacity-40 blur-[1px]" />
+                    </div>
+                    <div className="mt-4 px-2">
+                      <p className="text-[10px] text-gray-400 font-mono">CloneX #5621 | CLONEX - X TAKASHI</p>
+                      <p className="text-lg font-bold text-white mt-1">CloneX #5621 //</p>
+                    </div>
                   </div>
-                  <h3 className="text-lg lg:text-[1.02rem] font-semibold mb-1">{card.title}</h3>
-                  <p className="text-sm lg:text-[0.87rem] lg:leading-relaxed text-gray-400">{card.text}</p>
                 </div>
-              ))}
+
+                {/* Background Backing Slab Right */}
+                <div className="slab-glass-card slab-glass-card--back-right">
+                  <div className="p-3">
+                    <div className="w-full h-56 rounded-xl bg-gradient-to-br from-rose-900/60 via-purple-950/40 to-black overflow-hidden flex items-center justify-center">
+                      <BrandLogo className="w-24 h-24 opacity-40 blur-[1px]" />
+                    </div>
+                    <div className="mt-4 px-2">
+                      <p className="text-[10px] text-gray-400 font-mono">CloneX #17920 | TAKASHI MURAKAMI</p>
+                      <p className="text-lg font-bold text-white mt-1">CloneX #17920 //</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Main Foreground Hero Slab */}
+                <div className="slab-glass-card slab-glass-card--front">
+                  <div className="slab-card-inner">
+                    <div className="slab-card-art">
+                      {/* Stylized Cyber Vault Card Banner */}
+                      <div className="absolute inset-0 bg-gradient-to-b from-purple-900/80 via-rose-900/40 to-black/90 flex flex-col items-center justify-center p-6 text-center">
+                        <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-xl shadow-purple-950/50 mb-3">
+                          <BrandLogo className="w-12 h-12" />
+                        </div>
+                        <span className="px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 text-[11px] font-bold uppercase tracking-wider">
+                          SpooVault Pass
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="slab-card-details">
+                      <p className="text-[10px] font-mono text-gray-400 tracking-wider">
+                        CloneX #5621 | CLONE X - X TAKASHI MURAKAMI
+                      </p>
+
+                      <div className="mt-2 flex items-center justify-between">
+                        <div>
+                          <h3 className="text-2xl font-black text-white tracking-tight">CloneX</h3>
+                          <p className="text-xl font-bold text-gray-200">#5621</p>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl font-mono text-gray-400 font-bold">//</span>
+                          {/* QR Code graphic mockup */}
+                          <div className="w-12 h-12 rounded-lg bg-white p-1 flex items-center justify-center shadow-md">
+                            <svg viewBox="0 0 24 24" className="w-full h-full text-gray-950 fill-current">
+                              <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm11-2h7v7h-7V2zm2 2v3h3V4h-3zM2 15h7v7H2v-7zm2 2v3h3v-3H4zm13-2h3v3h-3v-3zm0 4h5v3h-5v-3zm-4-4h2v7h-2v-7zm0-4h4v2h-4v-2z" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-gray-400 font-mono">
+                        <span>5621 of 20,000</span>
+                        <span className="text-rose-400">VERIFIED ON AVALANCHE</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="mobile-slider-dots" aria-label="Workflow slider progress">
-              {workflowCards.map((card, idx) => (
-                <button
-                  key={card.step}
-                  type="button"
-                  aria-label={`Show workflow step ${idx + 1}`}
-                  onClick={() => scrollSliderToIndex("workflow", idx)}
-                  className={`mobile-slider-dot${activeMobileSlide.workflow === idx ? " is-active" : ""}`}
-                />
-              ))}
-            </div>
-            <p className="mobile-slider-ellipsis" aria-hidden="true">...</p>
-            <p className="mobile-slider-hint">Swipe to review all release steps</p>
           </div>
-        </div>
         </div>
       </section>
 
@@ -801,7 +774,7 @@ const LandingPage = () => {
             </span>
             <a href="#features" className="w-full sm:w-auto">
               <Button
-                className={`w-full sm:w-auto ${neutralButtonClass}`}
+                className={`w-full sm:w-auto ${solidButtonClass}`}
                 endContent={<FiArrowRight className="text-[16px] transition-transform duration-300 group-hover:translate-x-1" />}
               >
                 Explore Capabilities
