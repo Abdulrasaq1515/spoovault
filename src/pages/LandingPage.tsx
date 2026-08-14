@@ -13,6 +13,7 @@ import {
   FiCheckCircle,
   FiFileText,
   FiKey,
+  FiPlay,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { getCurrentYear } from "../utils/helpers";
@@ -22,16 +23,73 @@ import BrandLogo from "../components/BrandLogo";
 const HEADLINE_TYPING_TEXT = "Live and Beyond";
 type MobileSliderKey = "kpi" | "workflow" | "features";
 
+const ecosystemCards = [
+  {
+    id: "avalanche",
+    name: "Avalanche",
+    badge: "VERIFIED ON AVALANCHE",
+    badgeColor: "text-rose-400 border-rose-500/40 bg-rose-500/20",
+    title: "SpooVault",
+    cardNumber: "#AVAX-43114",
+    subtitle: "AVALANCHE C-CHAIN VAULT",
+    detailsTag: "AVALANCHE // MULTI-SIG KEY SHARE",
+    serial: "43114 of 50,000",
+    passName: "C-Chain Access Pass",
+    gradient: "from-purple-950 via-rose-900/60 to-black/95",
+    glowColor: "rgba(225, 29, 72, 0.4)",
+    iconSymbol: "🔺",
+  },
+  {
+    id: "stellar",
+    name: "Stellar",
+    badge: "VERIFIED ON STELLAR",
+    badgeColor: "text-cyan-300 border-cyan-400/40 bg-cyan-500/20",
+    title: "SpooVault",
+    cardNumber: "#XLM-1001",
+    subtitle: "STELLAR SECRET KEY VAULT",
+    detailsTag: "STELLAR // ED25519 ENCRYPTED",
+    serial: "1001 of 50,000",
+    passName: "Stellar Key Pass",
+    gradient: "from-blue-950 via-indigo-900/60 to-black/95",
+    glowColor: "rgba(56, 189, 248, 0.4)",
+    iconSymbol: "🚀",
+  },
+  {
+    id: "soroban",
+    name: "Soroban",
+    badge: "POWERED BY SOROBAN",
+    badgeColor: "text-emerald-300 border-emerald-400/40 bg-emerald-500/20",
+    title: "SpooVault",
+    cardNumber: "#SOROBAN-302",
+    subtitle: "SOROBAN SMART CONTRACT VAULT",
+    detailsTag: "SOROBAN // WASM AUTO-INHERIT",
+    serial: "302 of 50,000",
+    passName: "Soroban Contract Pass",
+    gradient: "from-emerald-950 via-teal-900/60 to-black/95",
+    glowColor: "rgba(52, 211, 153, 0.4)",
+    iconSymbol: "⚡",
+  },
+];
+
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeNav, setActiveNav] = useState("#hero");
   const [showSplash, setShowSplash] = useState(true);
   const [isHeaderElevated, setIsHeaderElevated] = useState(false);
+  const [activeCardIdx, setActiveCardIdx] = useState(0);
   const [activeMobileSlide, setActiveMobileSlide] = useState<Record<MobileSliderKey, number>>({
     kpi: 0,
     workflow: 0,
     features: 0,
   });
+
+  useEffect(() => {
+    if (showSplash) return;
+    const timer = window.setInterval(() => {
+      setActiveCardIdx((prev) => (prev + 1) % ecosystemCards.length);
+    }, 3800);
+    return () => window.clearInterval(timer);
+  }, [showSplash]);
   const landingVariantClass = (() => {
     const param = new URLSearchParams(window.location.search).get("lp");
     if (param === "1") return "landing-variant-01";
@@ -391,9 +449,9 @@ const LandingPage = () => {
 
       <div className={`landing-fixed-top md:hidden fixed inset-x-3 top-4 z-50 mx-auto max-w-[30rem]${isHeaderElevated ? " is-elevated" : ""}`}>
         <div className="relative">
-          <div className="landing-mobile-header-bar w-full h-[4.5rem] rounded-2xl border border-gray-800/70 bg-gray-950/82 backdrop-blur-2xl shadow-[0_18px_36px_-26px_rgba(0,0,0,0.95)] px-4 flex items-center gap-3">
+          <div className="landing-mobile-header-bar w-full h-[4.5rem] rounded-2xl bg-gray-950/80 backdrop-blur-2xl px-4 flex items-center gap-3">
             <Link to="/" className="flex items-center gap-2 min-w-0 flex-1 overflow-hidden" onClick={() => setIsMenuOpen(false)}>
-              <div className="w-9 h-9 rounded-xl bg-white/5 border border-gray-700/60 flex items-center justify-center shadow-lg shadow-brand-900/20 flex-shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shadow-lg shadow-brand-900/20 flex-shrink-0">
                 <BrandLogo className="w-5 h-5" />
               </div>
               <div className="min-w-0">
@@ -403,7 +461,7 @@ const LandingPage = () => {
             <button
               type="button"
               aria-label="Toggle navigation menu"
-              className="w-10 h-10 rounded-xl border border-gray-700/70 bg-gray-900/75 text-gray-200 flex items-center justify-center flex-shrink-0"
+              className="w-10 h-10 rounded-xl border border-white/10 bg-gray-900/75 text-gray-200 flex items-center justify-center flex-shrink-0"
               onClick={() => setIsMenuOpen((prev) => !prev)}
             >
               {isMenuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
@@ -415,7 +473,7 @@ const LandingPage = () => {
               isMenuOpen ? "max-h-[420px] opacity-100 mt-2" : "max-h-0 opacity-0 mt-0"
             }`}
           >
-            <div className="landing-mobile-menu-panel w-full rounded-2xl border border-gray-800/80 bg-gray-950/95 backdrop-blur-2xl p-2 shadow-[0_22px_32px_-24px_rgba(0,0,0,0.95)]">
+            <div className="landing-mobile-menu-panel w-full rounded-2xl border border-white/10 bg-gray-950/95 backdrop-blur-2xl p-2 shadow-2xl">
               <nav className="space-y-1">
                 {navItems.map((item) => (
                   <a
@@ -427,7 +485,7 @@ const LandingPage = () => {
                     }}
                     className={`flex w-full items-center justify-between rounded-xl px-3 py-3 text-sm font-medium transition-colors ${
                       activeNav === item.href
-                        ? "border border-gray-700/80 bg-gray-800/80 text-white"
+                        ? "border border-white/15 bg-gray-800/80 text-white"
                         : "border border-transparent text-gray-300 hover:bg-gray-800/60 hover:text-white"
                     }`}
                   >
@@ -453,18 +511,18 @@ const LandingPage = () => {
       <div className={`landing-fixed-top hidden md:block fixed inset-x-0 top-5 z-50 px-6 lg:px-8${isHeaderElevated ? " is-elevated" : ""}`}>
         <div className="w-full max-w-7xl mx-auto">
         <Navbar
-          className="landing-desktop-nav rounded-2xl border border-gray-800/70 bg-gray-950/82 backdrop-blur-2xl shadow-[0_18px_36px_-26px_rgba(0,0,0,0.95)]"
+          className="landing-desktop-nav bg-gray-950/60 backdrop-blur-2xl border-b border-white/5"
           maxWidth="full"
           height="4.5rem"
         >
         <NavbarContent justify="start" className="gap-3">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white/5 border border-gray-700/60 flex items-center justify-center shadow-lg shadow-brand-900/20">
+            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shadow-lg shadow-brand-900/20">
               <BrandLogo className="w-6 h-6" />
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl font-bold">SpooVault</h1>
-              <p className="text-[11px] text-gray-400">Avalanche Access Security</p>
+              <p className="text-[11px] text-gray-400">Stellar & Avalanche Access Vault</p>
             </div>
           </Link>
         </NavbarContent>
@@ -516,15 +574,15 @@ const LandingPage = () => {
             {/* Left Copy & Actions */}
             <div className="landing-hero-copy reveal-on-scroll" data-reveal data-reveal-delay="40">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight text-white">
-                Finest Encrypted<br />
+                Decentralized<br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-purple-300 to-pink-500">
-                  Key Share & Vault
+                  Key Share Vault
                 </span><br />
-                Marketplace
+                & Inheritance Protocol
               </h1>
 
               <p className="landing-hero-description mt-6 text-base sm:text-lg text-gray-300 max-w-xl leading-relaxed">
-                Best place for you to discover, create, and manage encrypted secret shares and Web3 inheritance vaults.
+                Encrypt and store private keys, seed phrases, and confidential family records across Avalanche, Stellar, and Soroban with multi-guardian dead man's switch security.
               </p>
 
               <div className="landing-hero-actions mt-8 flex flex-wrap items-center gap-4">
@@ -535,7 +593,7 @@ const LandingPage = () => {
                   </button>
                 </Link>
 
-                <a href="#workflow">
+                <a href="#video">
                   <button className="h-12 px-7 rounded-full border border-gray-700 bg-gray-900/60 text-gray-200 font-semibold text-sm tracking-wide transition-all duration-300 hover:border-gray-500 hover:bg-gray-800 flex items-center gap-2.5">
                     <div className="w-6 h-6 rounded-full border border-gray-400/80 flex items-center justify-center text-[10px] pl-0.5">
                       ▶
@@ -545,24 +603,24 @@ const LandingPage = () => {
                 </a>
               </div>
 
-              {/* Metrics Row (Matching Mockup) */}
+              {/* Product Metrics Row */}
               <div className="mt-14 pt-8 border-t border-gray-800/80 grid grid-cols-3 gap-6">
                 <div>
                   <p className="text-2xl sm:text-3xl font-black text-white tracking-tight">35K+</p>
-                  <p className="text-xs sm:text-sm text-gray-400 font-medium mt-1">Trading Cards</p>
+                  <p className="text-xs sm:text-sm text-gray-400 font-medium mt-1">Key Shares Encrypted</p>
                 </div>
                 <div>
                   <p className="text-2xl sm:text-3xl font-black text-white tracking-tight">17K+</p>
-                  <p className="text-xs sm:text-sm text-gray-400 font-medium mt-1">Exclusive NFT</p>
+                  <p className="text-xs sm:text-sm text-gray-400 font-medium mt-1">Active Access Vaults</p>
                 </div>
                 <div>
-                  <p className="text-2xl sm:text-3xl font-black text-white tracking-tight">2K+</p>
-                  <p className="text-xs sm:text-sm text-gray-400 font-medium mt-1">Featured Artist</p>
+                  <p className="text-2xl sm:text-3xl font-black text-white tracking-tight">2.4K+</p>
+                  <p className="text-xs sm:text-sm text-gray-400 font-medium mt-1">Multi-Sig Guardians</p>
                 </div>
               </div>
             </div>
 
-            {/* Right Side: 3D Floating Glass Slabs Stack (Exact Match to Mockup) */}
+            {/* Right Side: Animated Dynamic Ecosystem 3D Glass Cards Stack */}
             <div className="slab-stage hidden sm:block">
               <div className="slab-card-stack">
                 {/* Background Backing Slab Left */}
@@ -572,8 +630,8 @@ const LandingPage = () => {
                       <BrandLogo className="w-24 h-24 opacity-40 blur-[1px]" />
                     </div>
                     <div className="mt-4 px-2">
-                      <p className="text-[10px] text-gray-400 font-mono">CloneX #5621 | CLONEX - X TAKASHI</p>
-                      <p className="text-lg font-bold text-white mt-1">CloneX #5621 //</p>
+                      <p className="text-[10px] text-gray-400 font-mono">STELLAR // ED25519 PASS</p>
+                      <p className="text-lg font-bold text-white mt-1">SpooVault XLM //</p>
                     </div>
                   </div>
                 </div>
@@ -581,60 +639,135 @@ const LandingPage = () => {
                 {/* Background Backing Slab Right */}
                 <div className="slab-glass-card slab-glass-card--back-right">
                   <div className="p-3">
-                    <div className="w-full h-56 rounded-xl bg-gradient-to-br from-rose-900/60 via-purple-950/40 to-black overflow-hidden flex items-center justify-center">
+                    <div className="w-full h-56 rounded-xl bg-gradient-to-br from-emerald-900/60 via-teal-950/40 to-black overflow-hidden flex items-center justify-center">
                       <BrandLogo className="w-24 h-24 opacity-40 blur-[1px]" />
                     </div>
                     <div className="mt-4 px-2">
-                      <p className="text-[10px] text-gray-400 font-mono">CloneX #17920 | TAKASHI MURAKAMI</p>
-                      <p className="text-lg font-bold text-white mt-1">CloneX #17920 //</p>
+                      <p className="text-[10px] text-gray-400 font-mono">SOROBAN // WASM PASS</p>
+                      <p className="text-lg font-bold text-white mt-1">SpooVault Soroban //</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Main Foreground Hero Slab */}
-                <div className="slab-glass-card slab-glass-card--front">
-                  <div className="slab-card-inner">
-                    <div className="slab-card-art">
-                      {/* Stylized Cyber Vault Card Banner */}
-                      <div className="absolute inset-0 bg-gradient-to-b from-purple-900/80 via-rose-900/40 to-black/90 flex flex-col items-center justify-center p-6 text-center">
-                        <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-xl shadow-purple-950/50 mb-3">
-                          <BrandLogo className="w-12 h-12" />
-                        </div>
-                        <span className="px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 text-[11px] font-bold uppercase tracking-wider">
-                          SpooVault Pass
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="slab-card-details">
-                      <p className="text-[10px] font-mono text-gray-400 tracking-wider">
-                        CloneX #5621 | CLONE X - X TAKASHI MURAKAMI
-                      </p>
-
-                      <div className="mt-2 flex items-center justify-between">
-                        <div>
-                          <h3 className="text-2xl font-black text-white tracking-tight">CloneX</h3>
-                          <p className="text-xl font-bold text-gray-200">#5621</p>
+                {/* Main Dynamic Foreground Hero Slab */}
+                {(() => {
+                  const currentCard = ecosystemCards[activeCardIdx];
+                  return (
+                    <div
+                      key={currentCard.id}
+                      className="slab-glass-card slab-glass-card--front transition-all duration-700 ease-out transform"
+                      style={{ boxShadow: `0 40px 80px -20px rgba(0,0,0,0.95), 0 0 45px ${currentCard.glowColor}` }}
+                    >
+                      <div className="slab-card-inner">
+                        <div className="slab-card-art">
+                          <div className={`absolute inset-0 bg-gradient-to-b ${currentCard.gradient} flex flex-col items-center justify-center p-6 text-center transition-all duration-700`}>
+                            <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-xl mb-3 relative">
+                              <BrandLogo className="w-12 h-12" />
+                              <span className="absolute -top-1 -right-1 text-sm">{currentCard.iconSymbol}</span>
+                            </div>
+                            <span className={`px-3 py-1 rounded-full border text-[11px] font-bold uppercase tracking-wider transition-all duration-500 ${currentCard.badgeColor}`}>
+                              {currentCard.passName}
+                            </span>
+                          </div>
                         </div>
 
-                        <div className="flex items-center gap-3">
-                          <span className="text-2xl font-mono text-gray-400 font-bold">//</span>
-                          {/* QR Code graphic mockup */}
-                          <div className="w-12 h-12 rounded-lg bg-white p-1 flex items-center justify-center shadow-md">
-                            <svg viewBox="0 0 24 24" className="w-full h-full text-gray-950 fill-current">
-                              <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm11-2h7v7h-7V2zm2 2v3h3V4h-3zM2 15h7v7H2v-7zm2 2v3h3v-3H4zm13-2h3v3h-3v-3zm0 4h5v3h-5v-3zm-4-4h2v7h-2v-7zm0-4h4v2h-4v-2z" />
-                            </svg>
+                        <div className="slab-card-details">
+                          <p className="text-[10px] font-mono text-gray-400 tracking-wider transition-all duration-300">
+                            {currentCard.detailsTag}
+                          </p>
+
+                          <div className="mt-2 flex items-center justify-between">
+                            <div>
+                              <h3 className="text-2xl font-black text-white tracking-tight">{currentCard.title}</h3>
+                              <p className="text-xl font-bold text-gray-200">{currentCard.cardNumber}</p>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                              <span className="text-2xl font-mono text-gray-400 font-bold">//</span>
+                              <div className="w-12 h-12 rounded-lg bg-white p-1 flex items-center justify-center shadow-md">
+                                <svg viewBox="0 0 24 24" className="w-full h-full text-gray-950 fill-current">
+                                  <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm11-2h7v7h-7V2zm2 2v3h3V4h-3zM2 15h7v7H2v-7zm2 2v3h3v-3H4zm13-2h3v3h-3v-3zm0 4h5v3h-5v-3zm-4-4h2v7h-2v-7zm0-4h4v2h-4v-2z" />
+                                </svg>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-gray-400 font-mono">
+                            <span>{currentCard.serial}</span>
+                            <span className={`font-bold ${currentCard.badgeColor.split(' ')[0]}`}>{currentCard.badge}</span>
                           </div>
                         </div>
                       </div>
-
-                      <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-gray-400 font-mono">
-                        <span>5621 of 20,000</span>
-                        <span className="text-rose-400">VERIFIED ON AVALANCHE</span>
-                      </div>
                     </div>
-                  </div>
+                  );
+                })()}
+              </div>
+
+              {/* Ecosystem Selector Buttons */}
+              <div className="mt-5 flex items-center justify-center gap-2 relative z-20">
+                {ecosystemCards.map((card, idx) => (
+                  <button
+                    key={card.id}
+                    type="button"
+                    onClick={() => setActiveCardIdx(idx)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 flex items-center gap-1.5 ${
+                      activeCardIdx === idx
+                        ? "bg-white/15 text-white border border-white/30 shadow-lg scale-105"
+                        : "bg-white/5 text-gray-400 border border-transparent hover:text-white hover:bg-white/10"
+                    }`}
+                  >
+                    <span>{card.iconSymbol}</span>
+                    <span>{card.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Video Overview Showcase Section */}
+      <section id="video" className="landing-section px-4 sm:px-6 lg:px-8 py-16 sm:py-24 relative overflow-hidden border-t border-gray-800/40 bg-gray-950/20">
+        <div className="max-w-5xl mx-auto text-center reveal-on-scroll" data-reveal data-reveal-delay="30">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-purple-500/30 bg-purple-950/40 text-purple-300 text-xs font-semibold tracking-wide uppercase mb-4">
+            <FiPlay className="text-xs text-rose-400" />
+            <span>Product Overview & Walkthrough</span>
+          </div>
+          
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+            See How SpooVault Protects Your Digital Legacy
+          </h2>
+          <p className="mt-4 text-base sm:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            Watch our step-by-step preview on how encrypted secret shares, multi-guardian consensus, and automated inheritance work seamlessly across Stellar and Avalanche.
+          </p>
+
+          {/* Video Player Showcase Container */}
+          <div className="mt-10 relative rounded-3xl border border-gray-800/80 bg-gradient-to-b from-gray-900/90 via-gray-950 to-black/95 p-3 sm:p-5 shadow-2xl shadow-purple-950/30 overflow-hidden group">
+            <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-gray-950 flex items-center justify-center border border-white/5">
+              {/* Placeholder Ambient Background */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-purple-950/80 via-rose-950/40 to-gray-950 flex items-center justify-center">
+                <BrandLogo className="w-36 h-36 opacity-15 blur-sm" />
+              </div>
+
+              {/* Video Player Overlay Elements */}
+              <div className="relative z-10 flex flex-col items-center justify-center p-6 text-center">
+                <div className="relative cursor-pointer group/btn">
+                  <div className="absolute -inset-4 rounded-full bg-rose-500/30 blur-xl group-hover/btn:bg-rose-500/50 transition-all duration-300 animate-pulse" />
+                  <button 
+                    type="button"
+                    aria-label="Play SpooVault protocol overview video"
+                    className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-r from-rose-500 to-purple-600 text-white flex items-center justify-center shadow-2xl transition-all duration-300 group-hover/btn:scale-110"
+                  >
+                    <FiPlay className="w-8 h-8 sm:w-10 sm:h-10 ml-1 fill-current" />
+                  </button>
                 </div>
+
+                <h3 className="mt-6 text-lg sm:text-xl font-bold text-white">
+                  SpooVault Protocol Video Walkthrough
+                </h3>
+                <p className="mt-1 text-xs sm:text-sm text-gray-400 font-mono">
+                  [ Official Video Demo • Coming Soon ]
+                </p>
               </div>
             </div>
           </div>
