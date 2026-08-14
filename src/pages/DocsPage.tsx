@@ -82,7 +82,7 @@ export default function DocsPage() {
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <a
-              href="https://github.com/spoovault/spoovault"
+              href="https://github.com/spoo-vault/spoovault"
               target="_blank"
               rel="noopener noreferrer"
               className={buttonClasses.primarySm}
@@ -220,7 +220,7 @@ export default function DocsPage() {
                   >
                     <FiCopy />
                   </button>
-                  <pre>{`git clone https://github.com/spoovault/spoovault.git
+                  <pre>{`git clone https://github.com/spoo-vault/spoovault.git
 cd spoovault
 npm install`}</pre>
                 </div>

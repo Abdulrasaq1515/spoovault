@@ -51,7 +51,7 @@ graph TD
 
 ### 2. Installation
 ```bash
-git clone https://github.com/spoovault/spoovault.git
+git clone https://github.com/spoo-vault/spoovault.git
 cd spoovault
 npm install
 ```
