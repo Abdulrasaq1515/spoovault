@@ -570,8 +570,6 @@ const LandingPage = () => {
 
       <section id="hero" className="landing-section relative px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-16 sm:pb-24">
         <div className="landing-hero-stage">
-          <div className="landing-hero-edge landing-hero-edge--left" />
-          <div className="landing-hero-edge landing-hero-edge--right" />
           <div className="landing-hero-beam" />
           
           <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">

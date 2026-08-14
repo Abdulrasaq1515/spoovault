@@ -764,14 +764,7 @@ input[type="file"]::file-selector-button:hover {
 }
 
 .landing-hero-edge {
-  position: absolute;
-  top: 12%;
-  width: clamp(10rem, 18vw, 16rem);
-  height: 62%;
-  border-radius: 9999px;
-  filter: blur(2px);
-  pointer-events: none;
-  animation: landing-edge-breathe 9.5s ease-in-out infinite;
+  display: none !important;
 }
 
 .landing-hero-edge::before {
@@ -849,17 +842,8 @@ input[type="file"]::file-selector-button:hover {
 }
 
 .landing-variant-02 .landing-hero-stage::after {
-  content: "";
-  position: absolute;
-  width: 130%;
-  height: 130%;
-  left: -15%;
-  top: -40%;
-  background:
-    radial-gradient(circle at 50% 50%, rgba(96, 173, 255, 0) 50%, rgba(96, 173, 255, 0.3) 53%, rgba(96, 173, 255, 0) 56%),
-    radial-gradient(circle at 50% 50%, rgba(96, 173, 255, 0) 60%, rgba(96, 173, 255, 0.24) 62%, rgba(96, 173, 255, 0) 64%);
-  opacity: 0.64;
-  pointer-events: none;
+  display: none !important;
+  content: none !important;
 }
 
 .landing-variant-02 .landing-hero-edge {
