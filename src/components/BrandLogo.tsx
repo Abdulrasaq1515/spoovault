@@ -1,30 +1,50 @@
 import { useState } from "react";
 
 const SpooVaultFallback = ({ className = "w-6 h-6" }: { className?: string }) => (
-  <svg viewBox="0 0 128 128" className={className} aria-hidden="true">
+  <svg viewBox="0 0 512 512" className={className} aria-hidden="true">
     <defs>
-      <linearGradient id="sv-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#2a0a12" />
-        <stop offset="60%" stopColor="#1a0711" />
-        <stop offset="100%" stopColor="#14050f" />
+      <linearGradient id="sv-fb-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#4c1d95" />
+        <stop offset="50%" stopColor="#3b0764" />
+        <stop offset="100%" stopColor="#2e1065" />
       </linearGradient>
-      <linearGradient id="sv-ribbon" x1="14%" y1="6%" x2="84%" y2="92%">
-        <stop offset="0%" stopColor="#FF9C96" />
-        <stop offset="52%" stopColor="#EF4A4F" />
-        <stop offset="100%" stopColor="#B5172E" />
+      <linearGradient id="sv-fb-crimson" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#fb7185" />
+        <stop offset="50%" stopColor="#e11d48" />
+        <stop offset="100%" stopColor="#9f1239" />
       </linearGradient>
-      <radialGradient id="sv-core" cx="50%" cy="50%" r="60%">
-        <stop offset="0%" stopColor="#FF7A5B" />
-        <stop offset="100%" stopColor="#C71E32" />
-      </radialGradient>
     </defs>
-    <rect x="2" y="2" width="124" height="124" rx="28" fill="url(#sv-bg)" />
     <path
-      fill="url(#sv-ribbon)"
-      d="M97 28H55c-10.5 0-19 8.5-19 19s8.5 19 19 19h18c5 0 9 4 9 9s-4 9-9 9H31v16h42c13.8 0 25-11.2 25-25S86.8 50 73 50H55c-1.7 0-3-1.3-3-3s1.3-3 3-3h40z"
+      d="M 256,42 C 340,42 410,72 440,96 C 440,240 390,380 256,470 C 122,380 72,240 72,96 C 102,72 172,42 256,42 Z"
+      fill="url(#sv-fb-purple)"
+      stroke="#6d28d9"
+      strokeWidth="6"
     />
-    <circle cx="64" cy="64" r="13" fill="url(#sv-core)" />
-    <path fill="#FFEAD5" d="M60.6 58.4c1.3-2.2 4.4-2.2 5.7 0l4.9 8.5c1.3 2.2-.3 5.1-2.8 5.1H58.5c-2.6 0-4.2-2.8-2.8-5.1z" />
+    <path
+      d="M 256,70 C 322,70 378,94 405,114 C 405,230 362,345 256,425 C 150,345 107,230 107,114 C 134,94 190,70 256,70 Z"
+      fill="none"
+      stroke="url(#sv-fb-crimson)"
+      strokeWidth="18"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M 370,140 C 290,120 170,165 170,230 C 170,290 342,260 342,330 C 342,390 220,410 142,375"
+      fill="none"
+      stroke="url(#sv-fb-purple)"
+      strokeWidth="38"
+      strokeLinecap="round"
+    />
+    <path
+      d="M 370,140 C 290,120 170,165 170,230 C 170,290 342,260 342,330 C 342,390 220,410 142,375"
+      fill="none"
+      stroke="url(#sv-fb-crimson)"
+      strokeWidth="14"
+      strokeLinecap="round"
+    />
+    <circle cx="256" cy="240" r="24" fill="#ffffff" />
+    <circle cx="256" cy="240" r="16" fill="#e11d48" />
+    <path d="M 244,248 L 268,248 L 274,288 L 238,288 Z" fill="#e11d48" />
   </svg>
 );
 
