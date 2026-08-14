@@ -4,8 +4,6 @@ import {
   CardBody,
   CardHeader,
   Chip,
-  Accordion,
-  AccordionItem,
 } from "@heroui/react";
 import {
   FiBook,
@@ -19,17 +17,51 @@ import {
   FiCpu,
   FiCopy,
   FiServer,
+  FiChevronDown,
+  FiChevronUp,
 } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { buttonClasses } from "../utils/buttonClasses";
 
 export default function DocsPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "setup" | "contracts" | "testing" | "grantfox">("overview");
+  const [openStep, setOpenStep] = useState<number | null>(1);
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
     toast.success(`${label} copied to clipboard`);
   };
+
+  const toggleStep = (step: number) => {
+    setOpenStep((prev) => (prev === step ? null : step));
+  };
+
+  const steps = [
+    {
+      id: 1,
+      title: "1. Claim an Issue on GrantFox",
+      content:
+        "Browse active issues on the GrantFox dashboard or GitHub issue tracker. Apply to the issue and wait for official assignment before commencing development work.",
+    },
+    {
+      id: 2,
+      title: "2. Adhere to Code Style & Design Tokens",
+      content:
+        "Maintain existing HeroUI and Tailwind CSS design tokens. Ensure accessibility (WCAG 2.1 AA), proper ARIA labeling, and responsive design across mobile and desktop viewports.",
+    },
+    {
+      id: 3,
+      title: "3. Link PR to GrantFox Issue",
+      content:
+        "Include Closes #IssueNumber in your Pull Request description so GrantFox automated webhooks track your milestone completion.",
+    },
+    {
+      id: 4,
+      title: "4. Provide Verification Evidence",
+      content:
+        "Attach screenshots/videos for UI changes and include passing test results from npm test.",
+    },
+  ];
 
   return (
     <div className="space-y-8 pb-12">
@@ -361,28 +393,35 @@ VITE_TX_WAIT_TIMEOUT_MS=180000`}</pre>
                 Spoovault participates in GrantFox open-source ecosystem bounties and milestone-based funding. Follow this checklist when claiming and submitting contributions:
               </p>
 
-              <Accordion variant="bordered" className="border-gray-800">
-                <AccordionItem key="1" aria-label="Step 1" title="1. Claim an Issue on GrantFox">
-                  <p className="text-xs text-gray-400 leading-relaxed">
-                    Browse active issues on the GrantFox dashboard or GitHub issue tracker. Apply to the issue and wait for official assignment before commencing development work.
-                  </p>
-                </AccordionItem>
-                <AccordionItem key="2" aria-label="Step 2" title="2. Adhere to Code Style & Design Tokens">
-                  <p className="text-xs text-gray-400 leading-relaxed">
-                    Maintain existing HeroUI and Tailwind CSS design tokens. Ensure accessibility (WCAG 2.1 AA), proper ARIA labeling, and responsive design across mobile and desktop viewports.
-                  </p>
-                </AccordionItem>
-                <AccordionItem key="3" aria-label="Step 3" title="3. Link PR to GrantFox Issue">
-                  <p className="text-xs text-gray-400 leading-relaxed">
-                    Include <code className="text-brand-400 bg-gray-950 px-1 rounded">Closes #IssueNumber</code> in your Pull Request description so GrantFox automated webhooks track your milestone completion.
-                  </p>
-                </AccordionItem>
-                <AccordionItem key="4" aria-label="Step 4" title="4. Provide Verification Evidence">
-                  <p className="text-xs text-gray-400 leading-relaxed">
-                    Attach screenshots/videos for UI changes and include passing test results from <code className="text-brand-400 bg-gray-950 px-1 rounded">npm test</code>.
-                  </p>
-                </AccordionItem>
-              </Accordion>
+              <div className="space-y-3">
+                {steps.map((step) => {
+                  const isOpen = openStep === step.id;
+                  return (
+                    <div
+                      key={step.id}
+                      className="rounded-xl border border-gray-800 bg-gray-950 overflow-hidden"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => toggleStep(step.id)}
+                        className="w-full px-4 py-3 flex items-center justify-between text-left font-medium text-white hover:bg-gray-900/50 transition-colors"
+                      >
+                        <span className="text-sm font-semibold">{step.title}</span>
+                        {isOpen ? (
+                          <FiChevronUp className="text-brand-400 text-base" />
+                        ) : (
+                          <FiChevronDown className="text-gray-500 text-base" />
+                        )}
+                      </button>
+                      {isOpen && (
+                        <div className="px-4 pb-4 pt-1 text-xs text-gray-400 border-t border-gray-800/80 leading-relaxed">
+                          {step.content}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </CardBody>
           </Card>
         </div>
