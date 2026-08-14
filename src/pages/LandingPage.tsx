@@ -568,8 +568,9 @@ const LandingPage = () => {
       <div className="landing-main-fade flex-1">
       <div className="h-[96px] sm:h-[104px]" aria-hidden="true" />
 
-      <section id="hero" className="landing-section relative px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-16 sm:pb-24">
+      <section id="hero" className="landing-section relative px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-16 sm:pb-24 overflow-hidden">
         <div className="landing-hero-stage">
+          <div className="landing-hero-world-globe" />
           <div className="landing-hero-beam" />
           
           <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
