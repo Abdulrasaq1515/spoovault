@@ -28,11 +28,10 @@ describe('AuditService (Cryptographic Audit Certificate Exporter)', () => {
 
   const mockActivities: ActivityEvent[] = [
     {
-      id: 'act-1',
-      type: 'VAULT_CREATED',
+      action: 'VAULT_CREATED',
       actor: '0x1111111111111111111111111111111111111111',
       timestamp: 1700000000,
-      details: 'Vault Alpha created',
+      status: 'success',
     },
   ];
 
