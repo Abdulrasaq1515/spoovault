@@ -18,6 +18,7 @@ import {
   FiChevronRight,
   FiUnlock,
   FiBell,
+  FiBook,
 } from "react-icons/fi";
 import { useWeb3 } from "../context/Web3Context";
 import { contractService } from "../services/contract.service";
@@ -76,6 +77,7 @@ const AppLayout = () => {
     { path: "/documents", label: "Documents", icon: FiFile },
     { path: "/access", label: "My Access", icon: FiUnlock },
     { path: "/nfts", label: "Access Passes", icon: FiKey },
+    { path: "/docs", label: "Docs & Guides", icon: FiBook },
     { path: "/profile", label: "Profile", icon: FiUser },
   ];
 
@@ -84,7 +86,7 @@ const AppLayout = () => {
     { path: "/vaults", label: "Vaults", icon: FiShield },
     { path: "/documents", label: "Docs", icon: FiFile },
     { path: "/access", label: "Access", icon: FiUnlock },
-    { path: "/nfts", label: "Passes", icon: FiKey },
+    { path: "/docs", label: "Guide", icon: FiBook },
   ];
 
   const desktopRailItems = navItems.filter((item) => item.path !== "/profile");

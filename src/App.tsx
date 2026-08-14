@@ -11,6 +11,7 @@ const Documents = lazy(() => import("./pages/Documents"));
 const NFTGallery = lazy(() => import("./pages/NFTGallery"));
 const Profile = lazy(() => import("./pages/Profile"));
 const AccessCenter = lazy(() => import("./pages/AccessCenter"));
+const DocsPage = lazy(() => import("./pages/DocsPage"));
 const AppLayout = lazy(() => import("./layouts/AppLayout"));
 
 function App() {
@@ -69,6 +70,7 @@ function App() {
               <Route path="/access" element={<AccessCenter />} />
               <Route path="/nfts" element={<NFTGallery />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/docs" element={<DocsPage />} />
             </Route>
           </Routes>
         </Suspense>
