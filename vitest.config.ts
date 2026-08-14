@@ -4,5 +4,9 @@ export default defineConfig({
   test: {
     include: ['src/__tests__/**/*.test.ts'],
     globals: true,
+    pool: 'forks',
+    forks: {
+      singleFork: true,
+    },
   },
 });

@@ -59,10 +59,17 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
     return "avalanche";
   });
 
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.setAttribute("data-ecosystem", ecosystem);
+    }
+  }, [ecosystem]);
+
   const setEcosystem = (eco: "avalanche" | "stellar") => {
     setEcosystemState(eco);
     if (typeof window !== "undefined") {
       window.localStorage.setItem("spoovault-ecosystem", eco);
+      document.documentElement.setAttribute("data-ecosystem", eco);
     }
     disconnect({ notify: false });
   };

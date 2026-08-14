@@ -4,22 +4,65 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+:root,
+:root[data-ecosystem="avalanche"] {
   --font-display: "Sora", "Segoe UI", sans-serif;
   --font-body: "Manrope", "Segoe UI", sans-serif;
   --background: 4 3% 6%; /* #040306 */
   --foreground: 0 0% 98%;
   --card: 0 0% 3.9%;
   --card-foreground: 0 0% 98%;
-  --primary: 355 70% 35%; /* Deep red */
+  --primary: 0 73% 33%; /* Deep red */
   --primary-foreground: 0 0% 9%;
   --secondary: 0 0% 14.9%;
   --secondary-foreground: 0 0% 98%;
-  --accent: 355 70% 35%;
+  --accent: 0 73% 33%;
   --accent-foreground: 0 0% 98%;
   --border: 0 0% 14.9%;
   --input: 0 0% 14.9%;
-  --ring: 355 70% 35%;
+  --ring: 0 73% 33%;
+
+  --brand-50: 0 80% 96%;
+  --brand-100: 0 78% 88%;
+  --brand-200: 0 76% 79%;
+  --brand-300: 0 69% 66%;
+  --brand-400: 0 58% 52%;
+  --brand-500: 0 70% 41%;
+  --brand-600: 0 73% 33%;
+  --brand-700: 0 75% 25%;
+  --brand-800: 0 75% 17%;
+  --brand-900: 0 76% 10%;
+  --shadow-primary: rgba(143, 22, 22, 0.85);
+}
+
+:root[data-ecosystem="stellar"] {
+  --font-display: "Sora", "Segoe UI", sans-serif;
+  --font-body: "Manrope", "Segoe UI", sans-serif;
+  --background: 4 3% 6%;
+  --foreground: 0 0% 98%;
+  --card: 0 0% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --primary: 271 81% 56%; /* Stellar Purple */
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 14.9%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 271 81% 56%;
+  --accent-foreground: 0 0% 98%;
+  --border: 0 0% 14.9%;
+  --input: 0 0% 14.9%;
+  --ring: 271 81% 56%;
+
+  --brand-50: 270 100% 96%;
+  --brand-100: 269 100% 92%;
+  --brand-200: 268 96% 85%;
+  --brand-300: 269 97% 75%;
+  --brand-400: 271 91% 65%;
+  --brand-500: 271 81% 56%;
+  --brand-600: 273 78% 47%;
+  --brand-700: 274 70% 40%;
+  --brand-800: 275 66% 32%;
+  --brand-900: 277 80% 21%;
+  --shadow-primary: rgba(147, 51, 234, 0.85);
 }
 
 :root[data-theme="ember"] {

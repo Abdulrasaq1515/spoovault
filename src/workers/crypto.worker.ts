@@ -29,8 +29,13 @@ self.onmessage = (event: MessageEvent<CryptoWorkerRequest>) => {
       };
       self.postMessage(response);
     } else if (type === "DECRYPT") {
-      const bytes = CryptoJS.AES.decrypt(payload.data, payload.key);
-      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+      let decrypted = "";
+      try {
+        const bytes = CryptoJS.AES.decrypt(payload.data, payload.key);
+        decrypted = bytes.toString(CryptoJS.enc.Utf8);
+      } catch {
+        decrypted = "";
+      }
       const response: CryptoWorkerResponse = {
         id,
         type: "DECRYPT_SUCCESS",

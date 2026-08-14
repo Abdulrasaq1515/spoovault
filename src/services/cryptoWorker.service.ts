@@ -74,8 +74,12 @@ class CryptoWorkerService {
   public async decryptAsync(encryptedData: string, key: string): Promise<string> {
     if (!this.worker) {
       // Fallback for environments where Web Worker is unavailable
-      const bytes = CryptoJS.AES.decrypt(encryptedData, key);
-      return bytes.toString(CryptoJS.enc.Utf8);
+      try {
+        const bytes = CryptoJS.AES.decrypt(encryptedData, key);
+        return bytes.toString(CryptoJS.enc.Utf8);
+      } catch {
+        return "";
+      }
     }
 
     const requestId = this.generateId();
