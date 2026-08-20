@@ -35,9 +35,14 @@ import { toast } from "react-hot-toast";
 import { formatDistanceToNow } from "date-fns";
 import { buttonClasses } from "../utils/buttonClasses";
 import { shortenAddress } from "../utils/helpers";
+<<<<<<< HEAD
+import { encryptWithPublicKey, decryptWithPrivateKey } from "../utils/crypto";
+import { clientKeyringService } from "../services/clientKeyring.service";
+=======
 import { captureError } from "../services/telemetry.service";
 import { encryptWithPublicKey } from "../utils/crypto";
 import { verifyShare, parseEncryptedMetadataPayload } from "../services/secrets.service";
+>>>>>>> main
 import { AuditLogTimeline } from "../components/audit/AuditLogTimeline";
 import { getExplorerTxUrl } from "../utils/explorer";
 import { InheritanceSettings } from "../components/vaults/InheritanceSettings";
@@ -466,18 +471,16 @@ const Dashboard = () => {
 
       let encryptedShareForBeneficiary = "";
       if (encryptedShare && encryptedShare.trim()) {
-        if (!window.ethereum) {
-          throw new Error("Web3 provider not found. Please connect your wallet.");
+        if (!account) {
+          throw new Error("Wallet not connected");
         }
 
-        toast("Decrypting key share in your wallet...");
-        const decryptedShare = await window.ethereum.request({
-          method: "eth_decrypt",
-          params: [encryptedShare, account],
-        });
+        toast("Decrypting key share from secure keyring...");
+        const guardianPrivateKey = await clientKeyringService.getDecryptedPrivateKey(account);
+        const decryptedShare = await decryptWithPrivateKey(encryptedShare, guardianPrivateKey);
 
         if (!decryptedShare) {
-          throw new Error("Failed to decrypt share with wallet");
+          throw new Error("Failed to decrypt share with keyring private key");
         }
 
         // VSS share verification
@@ -504,7 +507,7 @@ const Dashboard = () => {
         }
 
         // Re-encrypt the share for the beneficiary
-        encryptedShareForBeneficiary = encryptWithPublicKey(decryptedShare, beneficiaryPubKey);
+        encryptedShareForBeneficiary = await encryptWithPublicKey(decryptedShare, beneficiaryPubKey);
       }
 
       if (encryptedShareForBeneficiary) {
