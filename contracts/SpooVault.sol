@@ -260,13 +260,16 @@ contract SpooVault is ERC721 {
                 continue;
             }
 
+            if (guardianInvites[guardian][vaultId].expiresAt == 0) {
+                userInviteVaultIds[guardian].push(vaultId);
+            }
             guardianInvites[guardian][vaultId] = GuardianInvite({
                 guardian: guardian,
                 vaultId: vaultId,
                 accepted: false,
                 expiresAt: block.timestamp + 7 days
             });
-            userInviteVaultIds[guardian].push(vaultId);
+
         }
 
         emit VaultCreated(vaultId, msg.sender, name);
