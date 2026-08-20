@@ -90,12 +90,8 @@ export const isValidAddress = (address: string, ecosystem?: "avalanche" | "stell
   return /^0x[a-fA-F0-9]{40}$/.test(address) || isValidStellarAddress(address);
 };
 
-/**
- * Validate Stellar public key address (e.g. G...)
- */
-export const isValidStellarAddress = (address: string): boolean => {
-  return /^G[A-Z2-7]{55}$/.test(address);
-};
+
+
 
 /**
  * Validate either EVM or Stellar address across network boundaries
