@@ -1,6 +1,5 @@
-import { expect } from "chai";
-import hre from "hardhat";
-const { ethers } = hre;
+const { expect } = require("chai");
+const { ethers } = require("hardhat");
 
 describe("SpooVault EVM Contract Unit Tests", function () {
   let spooVault;

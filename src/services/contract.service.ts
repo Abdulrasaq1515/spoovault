@@ -10,6 +10,7 @@ export interface VaultData {
   approvalThreshold: number;
   isActive: boolean;
   createdAt: number;
+  network?: "avalanche" | "stellar";
 }
 
 export interface DocumentData {
@@ -35,6 +36,8 @@ export interface ActivityEvent {
   actor: string;
   timestamp: number;
   status: "success" | "pending";
+  txHash?: string;
+  network?: "avalanche" | "stellar";
 }
 
 export interface AccessRequestData {
@@ -885,6 +888,7 @@ const mapVaultData = (vault: any): VaultData => ({
   approvalThreshold: Number(vault[5]),
   isActive: vault[6],
   createdAt: Number(vault[7]),
+  network: "avalanche",
 });
 
 const mapDocumentData = (doc: any): DocumentData => ({
@@ -1408,6 +1412,23 @@ const fetchUserTokens = async (account: string): Promise<TokenData[]> => {
     .sort((a, b) => b.tokenId - a.tokenId);
 };
 
+const hasVaultToken = async (account: string, vaultId: number): Promise<boolean> => {
+  if (!account || !vaultId || vaultId <= 0) return false;
+  try {
+    await ensureContractDeployed();
+    const contract = ensureReadContract();
+    const result = await contract.hasVaultToken(account, vaultId);
+    return Boolean(result);
+  } catch {
+    try {
+      const userTokens = await fetchUserTokens(account);
+      return userTokens.some((t) => t.vaultId === vaultId);
+    } catch {
+      return false;
+    }
+  }
+};
+
 const getActivePassCountByVault = async (
   vaultIds: number[]
 ): Promise<Record<number, number>> => {
@@ -1461,6 +1482,7 @@ const getRecentActivity = async (limit = 5): Promise<ActivityEvent[]> => {
   await ensureContractDeployed();
   const contract = ensureReadContract();
   const perEventTail = Math.max(limit * 6, 40);
+  const network = getEcosystem();
   const [vaultLogs, documentLogs, requestLogs, nftLogs] = await Promise.all([
     getEventLogs("VaultCreated", { tail: perEventTail }),
     getEventLogs("DocumentAdded", { tail: perEventTail }),
@@ -1489,6 +1511,7 @@ const getRecentActivity = async (limit = 5): Promise<ActivityEvent[]> => {
     limited.map(async (entry) => {
       const timestamp = await getBlockTimestamp(entry.log.blockNumber, blockCache);
       const name = entry.parsed.name;
+      const txHash = entry.log.transactionHash;
 
       if (name === "VaultCreated") {
         return {
@@ -1496,6 +1519,8 @@ const getRecentActivity = async (limit = 5): Promise<ActivityEvent[]> => {
           actor: entry.parsed.args.creator,
           timestamp,
           status: "success" as const,
+          txHash,
+          network,
         };
       }
 
@@ -1507,6 +1532,8 @@ const getRecentActivity = async (limit = 5): Promise<ActivityEvent[]> => {
             actor: doc[4],
             timestamp,
             status: "success" as const,
+            txHash,
+            network,
           };
         } catch {
           return {
@@ -1514,6 +1541,8 @@ const getRecentActivity = async (limit = 5): Promise<ActivityEvent[]> => {
             actor: "Unknown",
             timestamp,
             status: "success" as const,
+            txHash,
+            network,
           };
         }
       }
@@ -1524,6 +1553,8 @@ const getRecentActivity = async (limit = 5): Promise<ActivityEvent[]> => {
           actor: entry.parsed.args.requester,
           timestamp,
           status: "pending" as const,
+          txHash,
+          network,
         };
       }
 
@@ -1533,6 +1564,8 @@ const getRecentActivity = async (limit = 5): Promise<ActivityEvent[]> => {
           actor: entry.parsed.args.to,
           timestamp,
           status: "success" as const,
+          txHash,
+          network,
         };
       }
 
@@ -1541,6 +1574,8 @@ const getRecentActivity = async (limit = 5): Promise<ActivityEvent[]> => {
         actor: "Unknown",
         timestamp,
         status: "success" as const,
+        txHash,
+        network,
       };
     })
   );
@@ -1739,6 +1774,42 @@ const proxiedGetLatestRequestsForUser = async (
   return getLatestRequestsForUser(user, documentIds);
 };
 
+const proxiedFetchUserTokens = async (account: string): Promise<TokenData[]> => {
+  if (getEcosystem() === "stellar") {
+    return stellarService.fetchUserTokens(account) as unknown as Promise<TokenData[]>;
+  }
+  return fetchUserTokens(account);
+};
+
+const proxiedHasVaultToken = async (
+  account: string,
+  vaultId: number,
+  network?: "avalanche" | "stellar"
+): Promise<boolean> => {
+  const targetNetwork = network || getEcosystem();
+  try {
+    if (targetNetwork === "stellar") {
+      return await stellarService.hasVaultToken(account, vaultId);
+    } else if (targetNetwork === "avalanche") {
+      return await hasVaultToken(account, vaultId);
+    }
+    return false;
+  } catch {
+    return false;
+  }
+};
+
+const proxiedMintAccessToken = async (
+  vaultId: number,
+  to: string,
+  tokenURI: string
+): Promise<number> => {
+  if (getEcosystem() === "stellar") {
+    return stellarService.mintAccessToken(vaultId, to, tokenURI);
+  }
+  return mintAccessToken(vaultId, to, tokenURI);
+};
+
 export const contractService = {
   initialize,
   clear,
@@ -1748,7 +1819,7 @@ export const contractService = {
   requestAccess: proxiedRequestAccess,
   approveAccess: proxiedApproveAccess,
   acceptGuardianInvite: proxiedAcceptGuardianInvite,
-  mintAccessToken,
+  mintAccessToken: proxiedMintAccessToken,
   burnAccessToken,
   fetchVaults,
   fetchVaultsByIds,
@@ -1756,7 +1827,8 @@ export const contractService = {
   fetchDocuments,
   fetchDocumentsForVaults: proxiedFetchDocumentsForVaults,
   fetchPendingInvites: proxiedFetchPendingInvites,
-  fetchUserTokens,
+  fetchUserTokens: proxiedFetchUserTokens,
+  hasVaultToken: proxiedHasVaultToken,
   getActivePassCountByVault,
   getTotalSupply,
   hasActiveAccess: proxiedHasActiveAccess,

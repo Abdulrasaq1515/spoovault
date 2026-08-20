@@ -38,6 +38,7 @@ import { shortenAddress } from "../utils/helpers";
 import { captureError } from "../services/telemetry.service";
 import { encryptWithPublicKey } from "../utils/crypto";
 import { AuditLogTimeline } from "../components/audit/AuditLogTimeline";
+import { getExplorerTxUrl } from "../utils/explorer";
 import { InheritanceSettings } from "../components/vaults/InheritanceSettings";
 
 const DASHBOARD_CACHE_PREFIX = "spoovault-dashboard-cache";
@@ -822,14 +823,25 @@ const Dashboard = () => {
                             ? formatDistanceToNow(new Date(activity.timestamp * 1000), { addSuffix: true })
                             : "-"}
                         </p>
-                        <Chip
-                          color={activity.status === "success" ? "success" : "warning"}
-                          variant="flat"
-                          size="sm"
-                          className="mt-1"
-                        >
-                          {activity.status}
-                        </Chip>
+                        <div className="flex items-center justify-end gap-2 mt-1">
+                          <Chip
+                            color={activity.status === "success" ? "success" : "warning"}
+                            variant="flat"
+                            size="sm"
+                          >
+                            {activity.status}
+                          </Chip>
+                          {activity.txHash && (
+                            <a
+                              href={getExplorerTxUrl(activity.txHash, activity.network)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-blue-400 hover:text-blue-300 inline-flex items-center gap-1"
+                            >
+                              Tx <FiArrowUpRight className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>

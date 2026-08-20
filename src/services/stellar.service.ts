@@ -40,6 +40,15 @@ export interface StellarVaultData {
   approvalThreshold: number;
   isActive: boolean;
   createdAt: number;
+  network?: "avalanche" | "stellar";
+}
+
+export interface StellarTokenData {
+  tokenId: number;
+  owner: string;
+  vaultId: number | null;
+  tokenURI: string;
+  mintedAt: number | null;
 }
 
 export interface StellarDocumentData {
@@ -250,11 +259,13 @@ const fetchVaultsForAccount = async (account: string): Promise<StellarVaultData[
   const target = account.toLowerCase();
   
   // Return vaults where user is a creator or active guardian
-  return vaults.filter(
-    (v) =>
-      v.creator.toLowerCase() === target ||
-      v.guardians.some((g) => g.toLowerCase() === target)
-  );
+  return vaults
+    .filter(
+      (v) =>
+        v.creator.toLowerCase() === target ||
+        v.guardians.some((g) => g.toLowerCase() === target)
+    )
+    .map((v) => ({ ...v, network: "stellar" as const }));
 };
 
 const addDocument = async (
@@ -444,61 +455,66 @@ const getUserPublicKey = async (user: string): Promise<string> => {
   return pubKeys[user] || "";
 };
 
-const registerCrossChainIdentity = async (
-  stellarAddress: string,
-  evmAddress: string,
-  publicKey?: string
-): Promise<void> => {
-  const normEvm = evmAddress.toLowerCase().trim();
-  const normStellar = stellarAddress.trim();
+interface MockToken {
+  tokenId: number;
+  owner: string;
+  vaultId: number;
+  tokenURI: string;
+  mintedAt: number;
+}
 
-  const evmToStellar = getMockStorage<Record<string, string>>("cross_evm_to_stellar", {});
-  const stellarToEvm = getMockStorage<Record<string, string>>("cross_stellar_to_evm", {});
-  const evmToPubkey = getMockStorage<Record<string, string>>("cross_evm_to_pubkey", {});
+const fetchUserTokens = async (account: string): Promise<StellarTokenData[]> => {
+  if (!account) return [];
+  const tokens = getMockStorage<MockToken[]>("tokens", []);
+  const target = account.toLowerCase();
+  return tokens
+    .filter((t) => t.owner.toLowerCase() === target)
+    .map((t) => ({
+      tokenId: t.tokenId,
+      owner: t.owner,
+      vaultId: t.vaultId,
+      tokenURI: t.tokenURI || "",
+      mintedAt: t.mintedAt || null,
+    }));
+};
 
-  evmToStellar[normEvm] = normStellar;
-  stellarToEvm[normStellar] = normEvm;
+const hasVaultToken = async (account: string, vaultId: number): Promise<boolean> => {
+  if (!account || !vaultId || vaultId <= 0) return false;
+  try {
+    const tokens = getMockStorage<MockToken[]>("tokens", []);
+    const target = account.toLowerCase();
+    const hasMockToken = tokens.some(
+      (t) => t.vaultId === vaultId && t.owner.toLowerCase() === target
+    );
+    if (hasMockToken) return true;
 
-  saveMockStorage("cross_evm_to_stellar", evmToStellar);
-  saveMockStorage("cross_stellar_to_evm", stellarToEvm);
-
-  if (publicKey) {
-    evmToPubkey[normEvm] = publicKey;
-    saveMockStorage("cross_evm_to_pubkey", evmToPubkey);
-
-    const pubKeys = getMockStorage<Record<string, string>>("public_keys", {});
-    pubKeys[normStellar] = publicKey;
-    saveMockStorage("public_keys", pubKeys);
+    if (isConfigured()) {
+      void sorobanRpcUrl;
+    }
+    return false;
+  } catch (error) {
+    console.error("Soroban token query failed:", error);
+    return false;
   }
 };
 
-const resolveEvmToStellar = async (evmAddress: string): Promise<string | null> => {
-  const normEvm = evmAddress.toLowerCase().trim();
-  const evmToStellar = getMockStorage<Record<string, string>>("cross_evm_to_stellar", {});
-  return evmToStellar[normEvm] || null;
-};
-
-const resolveStellarToEvm = async (stellarAddress: string): Promise<string | null> => {
-  const normStellar = stellarAddress.trim();
-  const stellarToEvm = getMockStorage<Record<string, string>>("cross_stellar_to_evm", {});
-  return stellarToEvm[normStellar] || null;
-};
-
-const resolveEvmToPublicKey = async (evmAddress: string): Promise<string | null> => {
-  const normEvm = evmAddress.toLowerCase().trim();
-  const evmToPubkey = getMockStorage<Record<string, string>>("cross_evm_to_pubkey", {});
-  if (evmToPubkey[normEvm]) {
-    return evmToPubkey[normEvm];
-  }
-
-  // Fallback: Check if linked to Stellar and resolve Stellar public key
-  const stellarAddr = await resolveEvmToStellar(normEvm);
-  if (stellarAddr) {
-    const pubKey = await getUserPublicKey(stellarAddr);
-    if (pubKey) return pubKey;
-  }
-
-  return null;
+const mintAccessToken = async (
+  vaultId: number,
+  to: string,
+  tokenURI: string
+): Promise<number> => {
+  const tokens = getMockStorage<MockToken[]>("tokens", []);
+  const nextId = tokens.length + 1;
+  const newToken: MockToken = {
+    tokenId: nextId,
+    owner: to,
+    vaultId,
+    tokenURI,
+    mintedAt: Math.floor(Date.now() / 1000),
+  };
+  tokens.push(newToken);
+  saveMockStorage("tokens", tokens);
+  return nextId;
 };
 
 export const stellarService = {
@@ -520,9 +536,8 @@ export const stellarService = {
   acceptGuardianInvite,
   registerPublicKey,
   getUserPublicKey,
-  registerCrossChainIdentity,
-  resolveEvmToStellar,
-  resolveStellarToEvm,
-  resolveEvmToPublicKey,
+  fetchUserTokens,
+  hasVaultToken,
+  mintAccessToken,
   isConfigured,
 };
