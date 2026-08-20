@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added robust handling of URL-safe Base64 (`-`, `_`), whitespace, and padding in `base64ToUint8Array`.
 - **Expanded Crypto & Keyring Test Suites**: Added comprehensive Vitest unit tests in `crypto.test.ts` and `clientKeyring.service.test.ts` covering key generation, ECIES encryption/decryption, tampered payloads, legacy fallbacks, PIN security, and encrypted backup export/import.
 
+### Fixed
+- **UTF-8 Multi-byte Character Encoding in Crypto Utilities**: Fixed character corruption and potential `DOMException: Invalid character` errors when encoding/decoding Base64 payloads containing multi-byte UTF-8 characters (emojis, international characters, and symbols) by refactoring to standard `TextEncoder` and `TextDecoder` APIs.
+
+
 ---
 
 ## [1.1.0] - 2026-08-14
