@@ -517,6 +517,64 @@ const mintAccessToken = async (
   return nextId;
 };
 
+const registerCrossChainIdentity = async (
+  stellarAddress: string,
+  evmAddress: string,
+  publicKey?: string
+): Promise<void> => {
+  const normEvm = evmAddress.toLowerCase().trim();
+  const normStellar = stellarAddress.trim();
+
+  const evmToStellar = getMockStorage<Record<string, string>>("cross_evm_to_stellar", {});
+  const stellarToEvm = getMockStorage<Record<string, string>>("cross_stellar_to_evm", {});
+  const evmToPubkey = getMockStorage<Record<string, string>>("cross_evm_to_pubkey", {});
+
+  evmToStellar[normEvm] = normStellar;
+  stellarToEvm[normStellar] = normEvm;
+
+  saveMockStorage("cross_evm_to_stellar", evmToStellar);
+  saveMockStorage("cross_stellar_to_evm", stellarToEvm);
+
+  if (publicKey) {
+    evmToPubkey[normEvm] = publicKey;
+    saveMockStorage("cross_evm_to_pubkey", evmToPubkey);
+
+    const pubKeys = getMockStorage<Record<string, string>>("public_keys", {});
+    pubKeys[normStellar] = publicKey;
+    saveMockStorage("public_keys", pubKeys);
+  }
+};
+
+const resolveEvmToStellar = async (evmAddress: string): Promise<string | null> => {
+  const normEvm = evmAddress.toLowerCase().trim();
+  const evmToStellar = getMockStorage<Record<string, string>>("cross_evm_to_stellar", {});
+  return evmToStellar[normEvm] || null;
+};
+
+const resolveStellarToEvm = async (stellarAddress: string): Promise<string | null> => {
+  const normStellar = stellarAddress.trim();
+  const stellarToEvm = getMockStorage<Record<string, string>>("cross_stellar_to_evm", {});
+  return stellarToEvm[normStellar] || null;
+};
+
+const resolveEvmToPublicKey = async (evmAddress: string): Promise<string | null> => {
+  const normEvm = evmAddress.toLowerCase().trim();
+  const evmToPubkey = getMockStorage<Record<string, string>>("cross_evm_to_pubkey", {});
+  if (evmToPubkey[normEvm]) {
+    return evmToPubkey[normEvm];
+  }
+
+  // Fallback: resolve via Stellar address -> public key
+  const stellarAddr = await resolveEvmToStellar(normEvm);
+  if (stellarAddr) {
+    const pubKey = await getUserPublicKey(stellarAddr);
+    if (pubKey) return pubKey;
+  }
+
+  return null;
+};
+
+
 export const stellarService = {
   initialize,
   clear,
@@ -539,5 +597,9 @@ export const stellarService = {
   fetchUserTokens,
   hasVaultToken,
   mintAccessToken,
+  registerCrossChainIdentity,
+  resolveEvmToStellar,
+  resolveStellarToEvm,
+  resolveEvmToPublicKey,
   isConfigured,
 };
