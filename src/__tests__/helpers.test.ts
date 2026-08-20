@@ -68,7 +68,7 @@ describe('Helper Utilities', () => {
 
     it('should validate Stellar addresses when ecosystem is stellar', () => {
       expect(isValidAddress('GAV7S2C232ZDA6TU7A6E7PFY4E57T3RUVBOZ6ITN5UEH6LQMUGQDRC3J', 'stellar')).toBe(true);
-      expect(isValidAddress('CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB', 'stellar')).toBe(true);
+      expect(isValidAddress('CCW67TSBGDWXY23MGOWGQRSWVUW7BMFWXDZXJWB36C3SQXFRMVG3N7C2', 'stellar')).toBe(true);
       expect(isValidAddress('0x64128680775Ef626379DeF6E5c815AeA8F4707Ef', 'stellar')).toBe(false);
     });
 
@@ -84,7 +84,7 @@ describe('Helper Utilities', () => {
     });
 
     it('should validate valid Stellar C... contract IDs', () => {
-      expect(isValidStellarAddress('CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB')).toBe(true);
+      expect(isValidStellarAddress('CCW67TSBGDWXY23MGOWGQRSWVUW7BMFWXDZXJWB36C3SQXFRMVG3N7C2')).toBe(true);
     });
 
     it('should reject invalid Stellar addresses', () => {
