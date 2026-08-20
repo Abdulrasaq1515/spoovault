@@ -8,13 +8,43 @@
 // import { rpc } from "@stellar/stellar-sdk";
 
 // ---------------------------------------------------------------------------
+// Freighter wallet-change subscription types
+// ---------------------------------------------------------------------------
+export interface StellarWalletChangeEvent {
+  account?: string;
+  network?: string;
+}
+
+export type StellarWalletChangeListener = (event: StellarWalletChangeEvent) => void;
+
+export type StellarUnsubscribe = () => void;
+
+const normalizeAddressValue = (value: unknown): string => {
+  if (typeof value === "string") return value.trim();
+  if (value && typeof (value as { address?: unknown }).address === "string") {
+    return (value as { address: string }).address.trim();
+  }
+  return "";
+};
+
+const normalizeNetworkValue = (value: unknown): string => {
+  if (typeof value === "string") return value.trim();
+  if (value && typeof (value as { network?: unknown }).network === "string") {
+    return (value as { network: string }).network.trim();
+  }
+  return "";
+};
+
+// ---------------------------------------------------------------------------
 // Lightweight freighter shim – replaced by real API when package is present
 // ---------------------------------------------------------------------------
 export type FreighterShim = {
   isConnected: () => Promise<boolean>;
   getAddress: () => Promise<string>;
-  signTransaction: (xdr: string, opts?: any) => Promise<string>;
-  signAuthEntry: (preimageXdr: string, opts?: any) => Promise<{ signedAuthEntry: string; error?: string }>;
+  signTransaction?: (xdr: string, opts?: any) => Promise<string>;
+  signAuthEntry?: (preimageXdr: string, opts?: any) => Promise<{ signedAuthEntry: string; error?: string }>;
+  getNetwork?: () => Promise<unknown>;
+  listen?: (callback: (event: StellarWalletChangeEvent) => void) => unknown;
 };
 
 let _freighter: any = null;
@@ -36,12 +66,42 @@ const loadFreighter = async (): Promise<FreighterShim> => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mod = await dynamicImport("@stellar/freighter-api") as any;
     _freighter = {
-      isConnected: mod.isConnected,
-      getAddress: mod.getAddress,
+      isConnected: async () => {
+        try {
+          const result = await mod.isConnected();
+          return typeof result === "boolean" ? result : Boolean(result?.isConnected);
+        } catch {
+          return false;
+        }
+      },
+      getAddress: async () => {
+        try {
+          if (typeof mod.getAddress === "function") {
+            return normalizeAddressValue(await mod.getAddress());
+          }
+          if (typeof mod.getPublicKey === "function") {
+            return normalizeAddressValue(await mod.getPublicKey());
+          }
+          if (typeof mod.getUserInfo === "function") {
+            const info = await mod.getUserInfo();
+            return normalizeAddressValue(
+              info && typeof (info as { publicKey?: unknown }).publicKey === "string"
+                ? (info as { publicKey: string }).publicKey
+                : ""
+            );
+          }
+          return "";
+        } catch {
+          return "";
+        }
+      },
       signTransaction: mod.signTransaction,
       signAuthEntry: mod.signAuthEntry,
+      getNetwork: typeof mod?.getNetwork === "function" ? mod.getNetwork : undefined,
+      listen: typeof mod?.listen === "function" ? mod.listen : undefined,
     };
   } catch {
+
     // Package not installed – graceful fallback stubs
     _freighter = {
       isConnected: async () => false,
@@ -140,6 +200,7 @@ const initialize = async (customContractId?: string): Promise<string | null> => 
 
 const clear = () => {
   activeAccount = null;
+  activeNetwork = "";
 };
 
 const getAccount = (): string | null => activeAccount;
@@ -158,6 +219,155 @@ const connectWallet = async (): Promise<string> => {
 
   activeAccount = address;
   return address;
+};
+
+// ---------------------------------------------------------------------------
+// Freighter wallet-change subscriptions
+//
+// The frontend previously snapshotted the Freighter wallet state once during
+// initialization. If the user switched accounts or changed networks inside the
+// Freighter extension, the app stayed out of sync and subsequent Soroban
+// transactions were signed for the wrong account (HostError Auth/InvalidAction).
+//
+// We integrate Freighter's `listen` event subscription when it is available
+// (either from the npm package or the injected window.freighterApi global) and
+// fall back to a lightweight polling watcher so account/network changes are
+// always detected even without native event support.
+// ---------------------------------------------------------------------------
+
+let activeNetwork = "";
+
+const getActiveNetwork = (): string => activeNetwork;
+
+const getNetworkValue = async (freighter: FreighterShim): Promise<string> => {
+  if (typeof freighter.getNetwork !== "function") return "";
+  try {
+    return normalizeNetworkValue(await freighter.getNetwork());
+  } catch {
+    return "";
+  }
+};
+
+/**
+ * Resolve the current Freighter network name (e.g. "TESTNET" or "PUBLIC").
+ */
+const getNetwork = async (): Promise<string> => {
+  const freighter = await loadFreighter();
+  const network = await getNetworkValue(freighter);
+  if (network) {
+    activeNetwork = network;
+  }
+  return network || activeNetwork;
+};
+
+const getInjectedListen = (): ((callback: (event: StellarWalletChangeEvent) => void) => unknown) | null => {
+  if (typeof window === "undefined") return null;
+  const injected = window.freighterApi || window.freighter;
+  if (injected && typeof injected.listen === "function") {
+    return injected.listen;
+  }
+  return null;
+};
+
+const loadListen = async (): Promise<((callback: (event: StellarWalletChangeEvent) => void) => unknown) | null> => {
+  const freighter = await loadFreighter();
+  if (typeof freighter.listen === "function") {
+    return freighter.listen;
+  }
+  return getInjectedListen();
+};
+
+const startPollingWatcher = (listener: StellarWalletChangeListener): (() => void) => {
+  if (typeof window === "undefined" || typeof window.setInterval !== "function") {
+    return () => {};
+  }
+
+  let lastAccount = activeAccount ?? "";
+  let lastNetwork = activeNetwork;
+
+  const tick = async () => {
+    try {
+      const freighter = await loadFreighter();
+      const [account, network] = await Promise.all([
+        freighter.getAddress(),
+        getNetworkValue(freighter),
+      ]);
+      const next: StellarWalletChangeEvent = {};
+      if (account && account !== lastAccount) {
+        lastAccount = account;
+        activeAccount = account;
+        next.account = account;
+      }
+      if (network && network !== lastNetwork) {
+        lastNetwork = network;
+        activeNetwork = network;
+        next.network = network;
+      }
+      if (next.account || next.network) {
+        listener(next);
+      }
+    } catch {
+      // ignore transient polling failures
+    }
+  };
+
+  void tick();
+  const interval = window.setInterval(tick, 2000);
+  return () => window.clearInterval(interval);
+};
+
+/**
+ * Subscribe to Freighter account/network changes. Prefers the extension's
+ * native `listen` subscription; otherwise falls back to polling. Returns an
+ * unsubscribe function that should be invoked on cleanup.
+ */
+export const subscribeToWalletChanges = (
+  listener: StellarWalletChangeListener
+): StellarUnsubscribe => {
+  let active = true;
+  let stopNative: (() => void) | null = null;
+  let stopPolling: (() => void) | null = null;
+
+  const handleEvent = (event: StellarWalletChangeEvent) => {
+    if (!active) return;
+    if (event && typeof event.account === "string" && event.account) {
+      activeAccount = event.account;
+    }
+    if (event && typeof event.network === "string" && event.network) {
+      activeNetwork = event.network;
+    }
+    listener({
+      ...(event && typeof event.account === "string" && event.account
+        ? { account: event.account }
+        : {}),
+      ...(event && typeof event.network === "string" && event.network
+        ? { network: event.network }
+        : {}),
+    });
+  };
+
+  void (async () => {
+    try {
+      const listenFn = await loadListen();
+      if (!active) return;
+      if (listenFn) {
+        const ret = listenFn(handleEvent) as unknown;
+        stopNative = typeof ret === "function" ? (ret as () => void) : () => {};
+      } else {
+        stopPolling = startPollingWatcher(handleEvent);
+      }
+    } catch {
+      if (active) {
+        stopPolling = startPollingWatcher(handleEvent);
+      }
+    }
+  })();
+
+  return () => {
+    active = false;
+    if (stopNative) stopNative();
+    if (stopPolling) stopPolling();
+  };
 };
 
 // Fallback Mock Storage for local development when Freighter/Soroban is not deployed
@@ -813,6 +1023,9 @@ export const stellarService = {
   clear,
   getAccount,
   connectWallet,
+  getActiveNetwork,
+  getNetwork,
+  subscribeToWalletChanges,
   createVault,
   getVault,
   fetchVaultsForAccount,
@@ -834,3 +1047,14 @@ export const stellarService = {
   setMockStellarSdk,
   setMockFreighter,
 };
+
+declare global {
+  interface Window {
+    freighterApi?: {
+      listen?: (callback: (event: StellarWalletChangeEvent) => void, opts?: { network?: string }) => unknown;
+    };
+    freighter?: {
+      listen?: (callback: (event: StellarWalletChangeEvent) => void, opts?: { network?: string }) => unknown;
+    };
+  }
+}
