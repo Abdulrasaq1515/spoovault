@@ -90,43 +90,6 @@ export const isValidAddress = (address: string, ecosystem?: "avalanche" | "stell
   return /^0x[a-fA-F0-9]{40}$/.test(address) || isValidStellarAddress(address);
 };
 
-
-
-
-/**
- * Validate either EVM or Stellar address across network boundaries
- */
-export const isValidCrossChainAddress = (address: string): boolean => {
-  return isValidAddress(address) || isValidStellarAddress(address);
-};
-
-/**
- * Normalize EVM address
- */
-export const normalizeEvmAddress = (address: string): string => {
-  return address.trim().toLowerCase();
-};
-
-/**
- * Normalize Stellar address
- */
-export const normalizeStellarAddress = (address: string): string => {
-  return address.trim().toUpperCase();
-};
-
-/**
- * Format cross-chain address with network label
- */
-export const formatCrossChainAddress = (address: string): string => {
-  if (isValidStellarAddress(address)) {
-    return `${shortenAddress(address)} (Stellar)`;
-  }
-  if (isValidAddress(address)) {
-    return `${shortenAddress(address)} (EVM)`;
-  }
-  return shortenAddress(address);
-};
-
 /**
  * Get IPFS gateway URL
  */
