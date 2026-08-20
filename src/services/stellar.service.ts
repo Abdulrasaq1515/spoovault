@@ -221,11 +221,9 @@ const connectWallet = async (): Promise<string> => {
   return address;
 };
 
-<<<<<<< HEAD
 // Fallback Mock Storage for local development and test environments when Freighter/Soroban is not deployed
 const inMemoryMockStorage: Record<string, string> = {};
 
-=======
 // ---------------------------------------------------------------------------
 // Freighter wallet-change subscriptions
 //
@@ -375,8 +373,6 @@ export const subscribeToWalletChanges = (
   };
 };
 
-// Fallback Mock Storage for local development when Freighter/Soroban is not deployed
->>>>>>> main
 const getMockStorage = <T,>(key: string, defaults: T): T => {
   try {
     if (typeof localStorage !== "undefined" && localStorage !== null) {

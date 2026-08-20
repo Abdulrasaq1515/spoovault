@@ -35,14 +35,11 @@ import { toast } from "react-hot-toast";
 import { formatDistanceToNow } from "date-fns";
 import { buttonClasses } from "../utils/buttonClasses";
 import { shortenAddress } from "../utils/helpers";
-<<<<<<< HEAD
+import { captureError } from "../services/telemetry.service";
 import { encryptWithPublicKey, decryptWithPrivateKey } from "../utils/crypto";
 import { clientKeyringService } from "../services/clientKeyring.service";
-=======
-import { captureError } from "../services/telemetry.service";
-import { encryptWithPublicKey } from "../utils/crypto";
 import { verifyShare, parseEncryptedMetadataPayload } from "../services/secrets.service";
->>>>>>> main
+
 import { AuditLogTimeline } from "../components/audit/AuditLogTimeline";
 import { getExplorerTxUrl } from "../utils/explorer";
 import { InheritanceSettings } from "../components/vaults/InheritanceSettings";

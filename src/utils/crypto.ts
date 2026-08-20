@@ -37,11 +37,6 @@ export function stringToUint8Array(str: string): Uint8Array {
   return new TextEncoder().encode(str);
 }
 
-/**
- * Uint8Array to String using standard TextDecoder (UTF-8)
-<<<<<<< HEAD
-=======
- */
 export function uint8ArrayToString(bytes: Uint8Array): string {
   return new TextDecoder().decode(bytes);
 }
@@ -61,36 +56,7 @@ export function base64ToUtf8(base64: string): string {
 }
 
 export interface EncryptedPayload {
-  version: string;
-  nonce: string;
-  ephemPublicKey: string;
-  ciphertext: string;
-}
 
-/**
- * Encrypt a plaintext message for a receiver using their base64-encoded X25519 public key.
- * Compatible with MetaMask's eth_decrypt (x25519-xsalsa20-poly1305).
->>>>>>> main
- */
-export function uint8ArrayToString(bytes: Uint8Array): string {
-  return new TextDecoder().decode(bytes);
-}
-
-/**
- * Encode UTF-8 string directly to Base64
- */
-export function utf8ToBase64(str: string): string {
-  return uint8ArrayToBase64(stringToUint8Array(str));
-}
-
-/**
- * Decode Base64 directly to UTF-8 string
- */
-export function base64ToUtf8(base64: string): string {
-  return uint8ArrayToString(base64ToUint8Array(base64));
-}
-
-export interface EncryptedPayload {
   version: string;
   nonce?: string;
   iv?: string;
