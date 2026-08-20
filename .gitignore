@@ -40,6 +40,7 @@ dev.log
 artifacts/
 cache/
 
-# Claude Code
-.claude
-CLAUDE.md
+# Rust / Soroban
+target/
+contracts-stellar/target/
+
