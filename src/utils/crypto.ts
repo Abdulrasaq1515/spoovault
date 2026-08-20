@@ -239,7 +239,6 @@ export async function encryptWithPublicKey(
     ["encrypt"]
   );
 
-<<<<<<< HEAD
   // Generate 12-byte initialization vector (IV)
   const iv = new Uint8Array(12);
   getWebCrypto().getRandomValues(iv);
@@ -261,20 +260,12 @@ export async function encryptWithPublicKey(
     iv: uint8ArrayToBase64(iv),
     ephemPublicKey: ephemPublicKeyBase64,
     ciphertext: uint8ArrayToBase64(new Uint8Array(ciphertextBuffer)),
-=======
-  const payload: EncryptedPayload = {
-    version: "x25519-xsalsa20-poly1305",
-    nonce: uint8ArrayToBase64(nonce),
-    ephemPublicKey: uint8ArrayToBase64(ephemeralKeypair.publicKey),
-    ciphertext: uint8ArrayToBase64(ciphertext),
->>>>>>> main
   };
 
   return JSON.stringify(payload);
 }
 
 /**
-<<<<<<< HEAD
  * Decrypt a ciphertext payload using receiver's base64-encoded private key.
  * Supports Web Crypto API ECIES (ECDH P-256 + AES-256-GCM) with fallback for legacy x25519-xsalsa20-poly1305 payloads.
  */
@@ -282,21 +273,11 @@ export async function decryptWithPrivateKey(
   encryptedPayloadJson: string | EncryptedPayload,
   receiverSecretKeyBase64: string
 ): Promise<string> {
-=======
- * Decrypt a ciphertext payload using receiver's base64-encoded X25519 private (secret) key.
- * Compatible with MetaMask's eth_decrypt (x25519-xsalsa20-poly1305).
- */
-export function decryptWithPrivateKey(
-  encryptedPayloadJson: string | EncryptedPayload,
-  receiverSecretKeyBase64: string
-): string {
->>>>>>> main
   const payload: EncryptedPayload =
     typeof encryptedPayloadJson === "string"
       ? JSON.parse(encryptedPayloadJson)
       : encryptedPayloadJson;
 
-<<<<<<< HEAD
   if (payload.version === ECIES_VERSION || payload.version?.startsWith("ecies-")) {
     const subtle = getWebCrypto().subtle;
     const receiverPrivateKey = await importECIESPrivateKey(receiverSecretKeyBase64);
@@ -363,27 +344,4 @@ export function decryptWithPrivateKey(
   }
 
   throw new Error(`Unsupported encryption version: ${payload.version}`);
-=======
-  if (payload.version !== "x25519-xsalsa20-poly1305") {
-    throw new Error(`Unsupported encryption version: ${payload.version}`);
-  }
-
-  const nonce = base64ToUint8Array(payload.nonce);
-  const ephemPublicKey = base64ToUint8Array(payload.ephemPublicKey);
-  const ciphertext = base64ToUint8Array(payload.ciphertext);
-  const secretKey = base64ToUint8Array(receiverSecretKeyBase64);
-
-  const decryptedBytes = nacl.box.open(
-    ciphertext,
-    nonce,
-    ephemPublicKey,
-    secretKey
-  );
-
-  if (!decryptedBytes) {
-    throw new Error("Failed to decrypt ciphertext with provided private key");
-  }
-
-  return uint8ArrayToString(decryptedBytes);
->>>>>>> main
 }
