@@ -39,3 +39,7 @@ dev.log
 # Hardhat
 artifacts/
 cache/
+
+# Claude Code
+.claude
+CLAUDE.md
