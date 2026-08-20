@@ -6,6 +6,7 @@ import {
   formatFileSize,
   formatDate,
   isValidAddress,
+  isValidStellarAddress,
   splitKeyAmongGuardians,
   reconstructKey,
   toVaultGID,
@@ -65,6 +66,33 @@ describe('Helper Utilities', () => {
       expect(isValidAddress('0x64128680775Ef626379DeF6E5c815AeA8F4707Ef')).toBe(true);
       expect(isValidAddress('0xInvalidAddressLength')).toBe(false);
       expect(isValidAddress('0x0000000000000000000000000000000000000000')).toBe(true);
+    });
+
+    it('should validate Stellar addresses when ecosystem is stellar', () => {
+      expect(isValidAddress('GAV7S2C232ZDA6TU7A6E7PFY4E57T3RUVBOZ6ITN5UEH6LQMUGQDRC3J', 'stellar')).toBe(true);
+      expect(isValidAddress('CCW67TSBGDWXY23MGOWGQRSWVUW7BMFWXDZXJWB36C3SQXFRMVG3N7C2', 'stellar')).toBe(true);
+      expect(isValidAddress('0x64128680775Ef626379DeF6E5c815AeA8F4707Ef', 'stellar')).toBe(false);
+    });
+
+    it('should accept both EVM and Stellar addresses without ecosystem parameter', () => {
+      expect(isValidAddress('0x64128680775Ef626379DeF6E5c815AeA8F4707Ef')).toBe(true);
+      expect(isValidAddress('GAV7S2C232ZDA6TU7A6E7PFY4E57T3RUVBOZ6ITN5UEH6LQMUGQDRC3J')).toBe(true);
+    });
+  });
+
+  describe('isValidStellarAddress', () => {
+    it('should validate valid Stellar G... public keys', () => {
+      expect(isValidStellarAddress('GAV7S2C232ZDA6TU7A6E7PFY4E57T3RUVBOZ6ITN5UEH6LQMUGQDRC3J')).toBe(true);
+    });
+
+    it('should validate valid Stellar C... contract IDs', () => {
+      expect(isValidStellarAddress('CCW67TSBGDWXY23MGOWGQRSWVUW7BMFWXDZXJWB36C3SQXFRMVG3N7C2')).toBe(true);
+    });
+
+    it('should reject invalid Stellar addresses', () => {
+      expect(isValidStellarAddress('0x64128680775Ef626379DeF6E5c815AeA8F4707Ef')).toBe(false);
+      expect(isValidStellarAddress('GINVALID')).toBe(false);
+      expect(isValidStellarAddress('')).toBe(false);
     });
   });
 
