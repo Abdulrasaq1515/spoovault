@@ -118,22 +118,33 @@ const connectWallet = async (): Promise<string> => {
   return address;
 };
 
-// Fallback Mock Storage for local development when Freighter/Soroban is not deployed
+// Fallback Mock Storage for local development and test environments when Freighter/Soroban is not deployed
+const inMemoryMockStorage: Record<string, string> = {};
+
 const getMockStorage = <T,>(key: string, defaults: T): T => {
   try {
-    const raw = localStorage.getItem(`spoovault-stellar-mock-${key}`);
-    return raw ? (JSON.parse(raw) as T) : defaults;
+    if (typeof localStorage !== "undefined" && localStorage !== null) {
+      const raw = localStorage.getItem(`spoovault-stellar-mock-${key}`);
+      return raw ? (JSON.parse(raw) as T) : defaults;
+    }
   } catch {
-    return defaults;
+    // ignore and fallback
   }
+  const raw = inMemoryMockStorage[`spoovault-stellar-mock-${key}`];
+  return raw ? (JSON.parse(raw) as T) : defaults;
 };
 
 const saveMockStorage = <T,>(key: string, data: T) => {
+  const jsonStr = JSON.stringify(data);
   try {
-    localStorage.setItem(`spoovault-stellar-mock-${key}`, JSON.stringify(data));
+    if (typeof localStorage !== "undefined" && localStorage !== null) {
+      localStorage.setItem(`spoovault-stellar-mock-${key}`, jsonStr);
+      return;
+    }
   } catch {
-    // ignore storage issues
+    // ignore
   }
+  inMemoryMockStorage[`spoovault-stellar-mock-${key}`] = jsonStr;
 };
 
 // Mock structures matching Soroban states
@@ -433,6 +444,63 @@ const getUserPublicKey = async (user: string): Promise<string> => {
   return pubKeys[user] || "";
 };
 
+const registerCrossChainIdentity = async (
+  stellarAddress: string,
+  evmAddress: string,
+  publicKey?: string
+): Promise<void> => {
+  const normEvm = evmAddress.toLowerCase().trim();
+  const normStellar = stellarAddress.trim();
+
+  const evmToStellar = getMockStorage<Record<string, string>>("cross_evm_to_stellar", {});
+  const stellarToEvm = getMockStorage<Record<string, string>>("cross_stellar_to_evm", {});
+  const evmToPubkey = getMockStorage<Record<string, string>>("cross_evm_to_pubkey", {});
+
+  evmToStellar[normEvm] = normStellar;
+  stellarToEvm[normStellar] = normEvm;
+
+  saveMockStorage("cross_evm_to_stellar", evmToStellar);
+  saveMockStorage("cross_stellar_to_evm", stellarToEvm);
+
+  if (publicKey) {
+    evmToPubkey[normEvm] = publicKey;
+    saveMockStorage("cross_evm_to_pubkey", evmToPubkey);
+
+    const pubKeys = getMockStorage<Record<string, string>>("public_keys", {});
+    pubKeys[normStellar] = publicKey;
+    saveMockStorage("public_keys", pubKeys);
+  }
+};
+
+const resolveEvmToStellar = async (evmAddress: string): Promise<string | null> => {
+  const normEvm = evmAddress.toLowerCase().trim();
+  const evmToStellar = getMockStorage<Record<string, string>>("cross_evm_to_stellar", {});
+  return evmToStellar[normEvm] || null;
+};
+
+const resolveStellarToEvm = async (stellarAddress: string): Promise<string | null> => {
+  const normStellar = stellarAddress.trim();
+  const stellarToEvm = getMockStorage<Record<string, string>>("cross_stellar_to_evm", {});
+  return stellarToEvm[normStellar] || null;
+};
+
+const resolveEvmToPublicKey = async (evmAddress: string): Promise<string | null> => {
+  const normEvm = evmAddress.toLowerCase().trim();
+  const evmToPubkey = getMockStorage<Record<string, string>>("cross_evm_to_pubkey", {});
+  if (evmToPubkey[normEvm]) {
+    return evmToPubkey[normEvm];
+  }
+
+  // Fallback: Check if linked to Stellar and resolve Stellar public key
+  const stellarAddr = await resolveEvmToStellar(normEvm);
+  if (stellarAddr) {
+    const pubKey = await getUserPublicKey(stellarAddr);
+    if (pubKey) return pubKey;
+  }
+
+  return null;
+};
+
 export const stellarService = {
   initialize,
   clear,
@@ -452,5 +520,9 @@ export const stellarService = {
   acceptGuardianInvite,
   registerPublicKey,
   getUserPublicKey,
+  registerCrossChainIdentity,
+  resolveEvmToStellar,
+  resolveStellarToEvm,
+  resolveEvmToPublicKey,
   isConfigured,
 };

@@ -6,6 +6,11 @@ import {
   formatFileSize,
   formatDate,
   isValidAddress,
+  isValidStellarAddress,
+  isValidCrossChainAddress,
+  normalizeEvmAddress,
+  normalizeStellarAddress,
+  formatCrossChainAddress,
   splitKeyAmongGuardians,
   reconstructKey,
   toVaultGID,
@@ -18,6 +23,11 @@ describe('Helper Utilities', () => {
     it('should format Ethereum address correctly', () => {
       const address = '0x64128680775Ef626379DeF6E5c815AeA8F4707Ef';
       expect(shortenAddress(address, 4)).toBe('0x6412...07Ef');
+    });
+
+    it('should format Stellar address correctly', () => {
+      const address = 'GBZXN7PIRZGNMHGA72STUFTOAITGM522NM3TVYLZMJOXOALPUYSTZFEF';
+      expect(shortenAddress(address, 4)).toBe('GBZXN7...ZFEF');
     });
 
     it('should return short string as is', () => {
@@ -58,11 +68,34 @@ describe('Helper Utilities', () => {
     });
   });
 
-  describe('isValidAddress', () => {
+  describe('isValidAddress & Cross-Chain Address Validation', () => {
     it('should validate valid Ethereum hex addresses', () => {
       expect(isValidAddress('0x64128680775Ef626379DeF6E5c815AeA8F4707Ef')).toBe(true);
       expect(isValidAddress('0xInvalidAddressLength')).toBe(false);
       expect(isValidAddress('0x0000000000000000000000000000000000000000')).toBe(true);
+    });
+
+    it('should validate Stellar public key addresses', () => {
+      expect(isValidStellarAddress('GBZXN7PIRZGNMHGA72STUFTOAITGM522NM3TVYLZMJOXOALPUYSTZFEF')).toBe(true);
+      expect(isValidStellarAddress('0x64128680775Ef626379DeF6E5c815AeA8F4707Ef')).toBe(false);
+      expect(isValidStellarAddress('INVALIDSTELLARKEY')).toBe(false);
+    });
+
+    it('should validate cross-chain addresses for both EVM and Stellar', () => {
+      expect(isValidCrossChainAddress('0x64128680775Ef626379DeF6E5c815AeA8F4707Ef')).toBe(true);
+      expect(isValidCrossChainAddress('GBZXN7PIRZGNMHGA72STUFTOAITGM522NM3TVYLZMJOXOALPUYSTZFEF')).toBe(true);
+      expect(isValidCrossChainAddress('not_an_address')).toBe(false);
+    });
+
+    it('should normalize EVM and Stellar addresses accurately', () => {
+      expect(normalizeEvmAddress(' 0x64128680775Ef626379DeF6E5c815AeA8F4707Ef ')).toBe('0x64128680775ef626379def6e5c815aea8f4707ef');
+      expect(normalizeStellarAddress(' gbzxn7pirzgnmhga72stuftoaitgm522nm3tvylzmjoxoalpuystzfef ')).toBe('GBZXN7PIRZGNMHGA72STUFTOAITGM522NM3TVYLZMJOXOALPUYSTZFEF');
+    });
+
+    it('should format cross-chain addresses with network indicator', () => {
+      expect(formatCrossChainAddress('0x64128680775Ef626379DeF6E5c815AeA8F4707Ef')).toBe('0x6412...07Ef (EVM)');
+      expect(formatCrossChainAddress('GBZXN7PIRZGNMHGA72STUFTOAITGM522NM3TVYLZMJOXOALPUYSTZFEF')).toBe('GBZXN7...ZFEF (Stellar)');
+      expect(formatCrossChainAddress('short')).toBe('short');
     });
   });
 
@@ -103,4 +136,3 @@ describe('Helper Utilities', () => {
     });
   });
 });
-

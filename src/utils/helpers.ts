@@ -78,6 +78,47 @@ export const isValidAddress = (address: string): boolean => {
 };
 
 /**
+ * Validate Stellar public key address (e.g. G...)
+ */
+export const isValidStellarAddress = (address: string): boolean => {
+  return /^G[A-Z2-7]{55}$/.test(address);
+};
+
+/**
+ * Validate either EVM or Stellar address across network boundaries
+ */
+export const isValidCrossChainAddress = (address: string): boolean => {
+  return isValidAddress(address) || isValidStellarAddress(address);
+};
+
+/**
+ * Normalize EVM address
+ */
+export const normalizeEvmAddress = (address: string): string => {
+  return address.trim().toLowerCase();
+};
+
+/**
+ * Normalize Stellar address
+ */
+export const normalizeStellarAddress = (address: string): string => {
+  return address.trim().toUpperCase();
+};
+
+/**
+ * Format cross-chain address with network label
+ */
+export const formatCrossChainAddress = (address: string): string => {
+  if (isValidStellarAddress(address)) {
+    return `${shortenAddress(address)} (Stellar)`;
+  }
+  if (isValidAddress(address)) {
+    return `${shortenAddress(address)} (EVM)`;
+  }
+  return shortenAddress(address);
+};
+
+/**
  * Get IPFS gateway URL
  */
 export const getIPFSURL = (hash: string): string => {
