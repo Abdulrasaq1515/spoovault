@@ -39,3 +39,8 @@ dev.log
 # Hardhat
 artifacts/
 cache/
+
+# Rust / Cargo
+contracts-stellar/target/
+target/
+

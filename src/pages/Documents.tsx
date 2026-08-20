@@ -371,7 +371,7 @@ const Documents = () => {
         return;
       }
 
-      const encryptedKey = encryptWithPublicKey(key, beneficiaryPubKey);
+      const encryptedKey = await encryptWithPublicKey(key, beneficiaryPubKey);
 
       const payload = {
         version: 1,
@@ -456,7 +456,7 @@ const Documents = () => {
         return;
       }
 
-      const encryptedKey = encryptWithPublicKey(key, beneficiaryPubKey);
+      const encryptedKey = await encryptWithPublicKey(key, beneficiaryPubKey);
 
       await keyInboxService.sendKeyEnvelope({
         version: 1,
@@ -651,7 +651,7 @@ const Documents = () => {
         const guardian = vault.guardians[i];
         const pubKey = guardianPubKeys[guardian];
         const share = keyShares[i];
-        const encrypted = encryptWithPublicKey(share, pubKey);
+        const encrypted = await encryptWithPublicKey(share, pubKey);
         encryptedShares.push(encrypted);
       }
 
