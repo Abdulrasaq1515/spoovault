@@ -23,6 +23,11 @@ describe('Helper Utilities', () => {
       expect(shortenAddress(address, 4)).toBe('0x6412...07Ef');
     });
 
+    it('should format Stellar address correctly', () => {
+      const address = 'GBZXN7PIRZGNMHGA72STUFTOAITGM522NM3TVYLZMJOXOALPUYSTZFEF';
+      expect(shortenAddress(address, 4)).toBe('GBZXN7...ZFEF');
+    });
+
     it('should return short string as is', () => {
       expect(shortenAddress('0x123')).toBe('0x123');
     });
@@ -61,7 +66,7 @@ describe('Helper Utilities', () => {
     });
   });
 
-  describe('isValidAddress', () => {
+  describe('isValidAddress & Cross-Chain Address Validation', () => {
     it('should validate valid Ethereum hex addresses', () => {
       expect(isValidAddress('0x64128680775Ef626379DeF6E5c815AeA8F4707Ef')).toBe(true);
       expect(isValidAddress('0xInvalidAddressLength')).toBe(false);
@@ -183,4 +188,3 @@ describe('Helper Utilities', () => {
     });
   });
 });
-
