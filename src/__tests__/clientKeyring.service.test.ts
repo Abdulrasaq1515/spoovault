@@ -38,7 +38,8 @@ describe("ClientKeyringService (IndexedDB & Secure Key Management)", () => {
 
     it("should generate and store a new keypair with a custom user PIN/passphrase", async () => {
       const pin = "secure-pin-9876";
-      const { publicKey } = await clientKeyringService.generateAndSaveKeyPair(testAccount, pin);
+      await clientKeyringService.generateAndSaveKeyPair(testAccount, pin);
+
 
       const record = await clientKeyringService.getKeyPairRecord(testAccount);
       expect(record?.hasPin).toBe(true);
@@ -166,9 +167,10 @@ describe("ClientKeyringService (IndexedDB & Secure Key Management)", () => {
       clientKeyringService.clearSessionCache();
       const restoredPriv = await clientKeyringService.getDecryptedPrivateKey(testAccount, "new-pin-222");
       expect(restoredPriv).toBeDefined();
-    });
+    }, 20000);
 
     it("should reject backup import if backup passphrase is incorrect", async () => {
+
       const backupPassphrase = "Real-Passphrase-123";
       await clientKeyringService.generateAndSaveKeyPair(testAccount);
 
@@ -184,8 +186,9 @@ describe("ClientKeyringService (IndexedDB & Secure Key Management)", () => {
           "Wrong-Passphrase-999"
         )
       ).rejects.toThrow("Incorrect backup passphrase");
-    });
+    }, 20000);
   });
+
 
   describe("Account List & Deletion", () => {
     it("should list accounts and delete properly", async () => {

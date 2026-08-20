@@ -122,7 +122,7 @@ export async function importECIESPublicKey(pubKeyBase64: string): Promise<Crypto
   if (keyBytes.length === 65 && keyBytes[0] === 0x04) {
     return subtle.importKey(
       "raw",
-      keyBytes,
+      keyBytes as unknown as BufferSource,
       {
         name: "ECDH",
         namedCurve: "P-256",
@@ -135,7 +135,7 @@ export async function importECIESPublicKey(pubKeyBase64: string): Promise<Crypto
   // Otherwise import as standard SPKI
   return subtle.importKey(
     "spki",
-    keyBytes,
+    keyBytes as unknown as BufferSource,
     {
       name: "ECDH",
       namedCurve: "P-256",
@@ -153,7 +153,7 @@ export async function importECIESPrivateKey(privKeyBase64: string): Promise<Cryp
   const keyBytes = base64ToUint8Array(privKeyBase64);
   return subtle.importKey(
     "pkcs8",
-    keyBytes,
+    keyBytes as unknown as BufferSource,
     {
       name: "ECDH",
       namedCurve: "P-256",
@@ -213,10 +213,10 @@ export async function encryptWithPublicKey(
   const ciphertextBuffer = await subtle.encrypt(
     {
       name: "AES-GCM",
-      iv,
+      iv: iv as unknown as BufferSource,
     },
     aesKey,
-    messageBytes
+    messageBytes as unknown as BufferSource
   );
 
   const ephemPublicKeyBase64 = await exportECIESPublicKey(ephemKeyPair.publicKey);
@@ -276,10 +276,10 @@ export async function decryptWithPrivateKey(
       decryptedBuffer = await subtle.decrypt(
         {
           name: "AES-GCM",
-          iv,
+          iv: iv as unknown as BufferSource,
         },
         aesKey,
-        ciphertext
+        ciphertext as unknown as BufferSource
       );
     } catch {
       throw new Error("Failed to decrypt ciphertext with provided private key");

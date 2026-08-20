@@ -1,9 +1,9 @@
 import {
   generateECIESKeyPairBase64,
-  exportECIESPublicKey,
   importECIESPublicKey,
   importECIESPrivateKey,
 } from "../utils/crypto";
+
 import { secretsService, PBKDF2_ITERATIONS } from "./secrets.service";
 
 export interface KeyPairRecord {

@@ -47,45 +47,8 @@ export function gfInverse(a: number): number {
   return EXP_TABLE[255 - LOG_TABLE[val]];
 }
 
-/**
- * Split a single byte into N shares with threshold K
- */
-function splitByte(secret: number, n: number, k: number): number[] {
-  if (k > n) throw new Error("Threshold cannot exceed total shares");
-  if (k < 1) throw new Error("Threshold must be at least 1");
 
-  // Coefficients: a_0 is the secret byte, a_1 ... a_{k-1} are random bytes
-  const coefficients = new Uint8Array(k);
-  coefficients[0] = secret;
 
-  const randomValues = new Uint8Array(k - 1);
-  if (typeof window !== "undefined" && window.crypto) {
-    window.crypto.getRandomValues(randomValues);
-  } else if (typeof globalThis !== "undefined" && globalThis.crypto) {
-    globalThis.crypto.getRandomValues(randomValues);
-  } else {
-    for (let i = 0; i < k - 1; i++) {
-      randomValues[i] = Math.floor(Math.random() * 256);
-    }
-  }
-  for (let i = 1; i < k; i++) {
-    coefficients[i] = randomValues[i - 1];
-  }
-
-  const shares: number[] = [];
-  // Calculate y for each x = 1 ... n
-  for (let x = 1; x <= n; x++) {
-    let y = 0;
-    let xPower = 1;
-    for (let j = 0; j < k; j++) {
-      y ^= gfMultiply(coefficients[j], xPower);
-      xPower = gfMultiply(xPower, x);
-    }
-    shares.push(y);
-  }
-
-  return shares;
-}
 
 /**
  * Reconstruct a single byte from K shares

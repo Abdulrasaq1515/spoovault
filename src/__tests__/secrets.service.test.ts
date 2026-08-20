@@ -158,8 +158,8 @@ describe("Galois Field GF(256) Lookup Table Optimization (Issue #16)", () => {
 
     it("reconstructSecret is backwards compatible and can reconstruct legacy GF(256) shares", () => {
       // Legacy share generation
-      const cleanHex = "deadbeef1234567890abcdef";
       const legacyShares = [
+
         "1-0678d46e9cb08865f1a5f6e8",
         "2-0db1af8a23d46ccbc12a52ef",
         "3-0bfb31057e1082c5cb6ad9c8",

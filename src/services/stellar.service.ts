@@ -542,6 +542,9 @@ const executeSorobanCall = async (
     const result = simulation.results[0];
     if (result.auth && result.auth.length > 0) {
       const freighter = await loadFreighter();
+      if (typeof freighter.signAuthEntry !== "function") {
+        throw new Error("Freighter wallet does not support signAuthEntry");
+      }
       for (let i = 0; i < result.auth.length; i++) {
         const entry = result.auth[i];
         const preimageXdr = entry.preimage().toXDR("base64");
@@ -565,9 +568,13 @@ const executeSorobanCall = async (
   
   // 7. Request Freighter user signature for transaction envelope
   const freighter = await loadFreighter();
+  if (typeof freighter.signTransaction !== "function") {
+    throw new Error("Freighter wallet does not support signTransaction");
+  }
   const signedXdr = await freighter.signTransaction(preparedTx.toXDR(), {
     network: "TESTNET"
   });
+
   
   if (!signedXdr) {
     throw new Error("Transaction signing rejected or failed");
