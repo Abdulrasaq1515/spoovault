@@ -12,18 +12,15 @@ node_modules
 
 # Misc
 .DS_Store
-.env.local
 .env.development.local
 .env.test.local
 .env.production.local
-.env
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
 # IDE
-.vscode
 .idea
 *.swp
 *.swo
@@ -58,3 +55,4 @@ test-results/
 blob-report/
 .playwright/
 
+config.bat
